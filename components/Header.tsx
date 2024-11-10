@@ -42,7 +42,7 @@ export default function Header() {
       </View>
       <View
         style={{
-          paddingBottom: height,
+          paddingBottom: height || 82,
         }}
       ></View>
     </>
