@@ -1,9 +1,10 @@
 import config from "@/tamagui.config";
-import { TamaguiProvider, Theme } from "tamagui";
+import { TamaguiProvider } from "tamagui";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { Slot } from "expo-router";
 import { useFonts } from "expo-font";
+import { useThemeStore } from "@/stores/themeStore";
 
 export default function Layout() {
   const [loaded] = useFonts({
@@ -11,17 +12,23 @@ export default function Layout() {
     InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
   });
 
+  const { currentTheme } = useThemeStore();
+
   if (!loaded) {
     return null;
   }
 
+  const isDark = currentTheme.includes("dark");
+
   return (
     <SafeAreaProvider>
-      <TamaguiProvider config={config}>
-        <StatusBar style="light" />
-        <Theme name="dark">
-          <Slot />
-        </Theme>
+      <TamaguiProvider
+        disableInjectCSS
+        config={config}
+        defaultTheme={currentTheme}
+      >
+        <StatusBar style={isDark ? "light" : "dark"} />
+        <Slot />
       </TamaguiProvider>
     </SafeAreaProvider>
   );
