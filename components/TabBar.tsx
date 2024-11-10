@@ -56,7 +56,7 @@ export default function TabBar({
               {options.tabBarIcon
                 ? options.tabBarIcon({
                     focused: isFocused,
-                    color: "#fff",
+                    color: "$color12",
                     size: getToken("$1"),
                   })
                 : null}

@@ -10,7 +10,7 @@ import { Avatar, Button, Text, View } from "tamagui";
 
 export default function Review() {
   return (
-    <View padding="$4" backgroundColor="$backgroundHover" borderRadius="$4">
+    <View padding="$4" backgroundColor="$color2" borderRadius="$4">
       <View flexDirection="row" gap="$2" alignItems="center">
         <Avatar circular size="$3">
           <Avatar.Fallback
