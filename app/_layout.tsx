@@ -5,6 +5,8 @@ import { StatusBar } from "expo-status-bar";
 import { Slot } from "expo-router";
 import { useFonts } from "expo-font";
 import { useThemeStore } from "@/stores/themeStore";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
 
 export default function Layout() {
   const [loaded] = useFonts({
@@ -14,6 +16,8 @@ export default function Layout() {
 
   const { currentTheme } = useThemeStore();
 
+  const [queryClient] = useState(() => new QueryClient());
+
   if (!loaded) {
     return null;
   }
@@ -22,14 +26,16 @@ export default function Layout() {
 
   return (
     <SafeAreaProvider>
-      <TamaguiProvider
-        disableInjectCSS
-        config={config}
-        defaultTheme={currentTheme}
-      >
-        <StatusBar style={isDark ? "light" : "dark"} />
-        <Slot />
-      </TamaguiProvider>
+      <QueryClientProvider client={queryClient}>
+        <TamaguiProvider
+          disableInjectCSS
+          config={config}
+          defaultTheme={currentTheme}
+        >
+          <StatusBar style={isDark ? "light" : "dark"} />
+          <Slot />
+        </TamaguiProvider>
+      </QueryClientProvider>
     </SafeAreaProvider>
   );
 }
