@@ -18,9 +18,7 @@ export default function TabsLayout() {
       tabBar={(p) => <TabBar {...p} />}
       screenOptions={{
         header: () => <Header />,
-      }}
-      sceneContainerStyle={{
-        backgroundColor: theme.background.get(),
+        sceneStyle: { backgroundColor: theme.background.get() },
       }}
     >
       <Tabs.Screen

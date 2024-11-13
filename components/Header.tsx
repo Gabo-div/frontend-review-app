@@ -1,17 +1,27 @@
 import { Button, GetRef, Text, View, XStack } from "tamagui";
 import { Bell, MessageCircle } from "@tamagui/lucide-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import useDimensions from "@/hooks/useDimensions";
+import { useRef, useLayoutEffect, useState } from "react";
 
 export default function Header() {
   const insets = useSafeAreaInsets();
-  const { ref, onLayout, height } = useDimensions<GetRef<typeof View>>();
+
+  const [height, setHeight] = useState(0);
+  const ref = useRef<GetRef<typeof View>>(null);
+
+  useLayoutEffect(() => {
+    if (!ref.current) return;
+
+    // @ts-ignore
+    const rect = ref.current.getBoundingClientRect();
+
+    setHeight(rect.height);
+  }, []);
 
   return (
     <>
       <View
         ref={ref}
-        onLayout={onLayout}
         position="absolute"
         flexDirection="row"
         top="$0"
@@ -42,7 +52,7 @@ export default function Header() {
       </View>
       <View
         style={{
-          paddingBottom: height || 82,
+          paddingBottom: height,
         }}
       ></View>
     </>
