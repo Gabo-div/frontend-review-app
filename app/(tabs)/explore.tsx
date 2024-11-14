@@ -1,16 +1,21 @@
-import { Input, View, useTheme } from "tamagui";
+import { Input, View, Sheet, AnimatePresence } from "tamagui";
 import MapView from "react-native-maps";
 import { useEffect, useRef, useState } from "react";
 import * as Location from "expo-location";
-import Color from "color";
+import { POI } from "@/models/POI";
+import Map from "@/components/explore/Map";
+import PlaceDetails from "@/components/PlaceDetails";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Explore() {
-  const theme = useTheme();
+  const insets = useSafeAreaInsets();
 
   const [location] = useState({
     latitude: 8.291058,
     longitude: -62.7917397,
   });
+
+  const [selectedPOI, setSelectedPOI] = useState<POI | null>(null);
 
   const mapRef = useRef<MapView>(null);
 
@@ -35,234 +40,73 @@ export default function Explore() {
     })();
   }, []);
 
-  const parseColor = (color: string): string => {
-    return Color(color).hex();
+  const onPoiClick = (poi: POI) => {
+    setSelectedPOI(poi);
+
+    mapRef.current?.animateCamera({
+      center: {
+        latitude: poi.coordinate.latitude,
+        longitude: poi.coordinate.longitude,
+      },
+    });
   };
 
-  const colors = {
-    text: parseColor(theme.color12.get()),
-    textSecondary: parseColor(theme.color11.get()),
-    stroke: parseColor(theme.color6.get()),
-    water: parseColor(theme.background.get()),
-    background: parseColor(theme.background.get()),
-    superface: parseColor(theme.color3.get()),
-    road: parseColor(theme.color5.get()),
-  };
+  const isSheetOpen = !!selectedPOI;
+
+  console.log(selectedPOI);
 
   return (
     <View flex={1} position="relative">
-      <View
-        position="absolute"
-        zIndex={10}
-        top="#0"
-        left="$0"
-        right="$0"
-        padding="$4"
-      >
-        <Input placeholder="Busca un lugar..." />
-      </View>
+      <Map ref={mapRef} initialCoords={location} onPoiClick={onPoiClick} />
 
-      <MapView
-        ref={mapRef}
-        style={{ width: "100%", height: "100%" }}
-        provider="google"
-        initialCamera={{
-          center: {
-            latitude: location.latitude,
-            longitude: location.longitude,
-          },
-          pitch: 0,
-          heading: 0,
-          altitude: 0,
-          zoom: 10.5,
+      <AnimatePresence>
+        {!isSheetOpen ? (
+          <View
+            position="absolute"
+            zIndex={10}
+            top="#0"
+            left="$0"
+            right="$0"
+            padding="$2"
+            style={{ marginTop: insets.top }}
+            animation="quick"
+            enterStyle={{ opacity: 0 }}
+            exitStyle={{ opacity: 0 }}
+          >
+            <Input placeholder="Busca un lugar..." />
+          </View>
+        ) : null}
+      </AnimatePresence>
+
+      <Sheet
+        forceRemoveScrollEnabled={!!selectedPOI}
+        open={isSheetOpen}
+        onOpenChange={(open: boolean) => {
+          if (!open) {
+            setSelectedPOI(null);
+          }
         }}
-        rotateEnabled={false}
-        showsUserLocation
-        followsUserLocation
-        toolbarEnabled={false}
-        showsMyLocationButton={false}
-        showsCompass={false}
-        loadingBackgroundColor={colors.background}
-        loadingIndicatorColor={colors.text}
-        customMapStyle={[
-          {
-            elementType: "geometry",
-            stylers: [
-              {
-                color: colors.superface,
-              },
-            ],
-          },
-          {
-            elementType: "labels.icon",
-            stylers: [
-              {
-                visibility: "off",
-              },
-            ],
-          },
-          {
-            elementType: "labels.text.fill",
-            stylers: [
-              {
-                color: colors.text,
-              },
-            ],
-          },
-          {
-            elementType: "labels.text.stroke",
-            stylers: [
-              {
-                color: colors.stroke,
-              },
-            ],
-          },
-          {
-            featureType: "administrative",
-            elementType: "geometry",
-            stylers: [
-              {
-                color: colors.text,
-              },
-            ],
-          },
-          {
-            featureType: "administrative.country",
-            elementType: "labels.text.fill",
-            stylers: [
-              {
-                color: colors.text,
-              },
-            ],
-          },
-          {
-            featureType: "administrative.locality",
-            elementType: "labels.text.fill",
-            stylers: [
-              {
-                color: colors.text,
-              },
-            ],
-          },
-          {
-            featureType: "poi",
-            elementType: "labels.text.fill",
-            stylers: [
-              {
-                color: colors.text,
-              },
-            ],
-          },
-          {
-            featureType: "poi.park",
-            elementType: "geometry",
-            stylers: [
-              {
-                color: colors.superface,
-              },
-            ],
-          },
-          {
-            featureType: "poi.park",
-            elementType: "labels.text.fill",
-            stylers: [
-              {
-                color: colors.text,
-              },
-            ],
-          },
-          {
-            featureType: "poi.park",
-            elementType: "labels.text.stroke",
-            stylers: [
-              {
-                color: colors.stroke,
-              },
-            ],
-          },
-          {
-            featureType: "road",
-            elementType: "geometry.fill",
-            stylers: [
-              {
-                color: colors.road,
-              },
-            ],
-          },
-          {
-            featureType: "road",
-            elementType: "labels.text.fill",
-            stylers: [
-              {
-                color: colors.textSecondary,
-              },
-            ],
-          },
-          {
-            featureType: "road.arterial",
-            elementType: "geometry",
-            stylers: [
-              {
-                color: colors.road,
-              },
-            ],
-          },
-          {
-            featureType: "road.highway",
-            elementType: "geometry",
-            stylers: [
-              {
-                color: colors.road,
-              },
-            ],
-          },
-          {
-            featureType: "road.highway.controlled_access",
-            elementType: "geometry",
-            stylers: [
-              {
-                color: colors.road,
-              },
-            ],
-          },
-          {
-            featureType: "road.local",
-            elementType: "labels.text.fill",
-            stylers: [
-              {
-                color: colors.textSecondary,
-              },
-            ],
-          },
-          {
-            featureType: "transit",
-            elementType: "labels.text.fill",
-            stylers: [
-              {
-                color: colors.text,
-              },
-            ],
-          },
-          {
-            featureType: "water",
-            elementType: "geometry",
-            stylers: [
-              {
-                color: colors.water,
-              },
-            ],
-          },
-          {
-            featureType: "water",
-            elementType: "labels.text.fill",
-            stylers: [
-              {
-                color: colors.text,
-              },
-            ],
-          },
-        ]}
-      ></MapView>
+        dismissOnSnapToBottom
+        zIndex={100_000}
+        animation="quick"
+        snapPoints={[95]}
+        modal
+      >
+        <Sheet.Overlay
+          animation="quick"
+          enterStyle={{ opacity: 0 }}
+          exitStyle={{ opacity: 0 }}
+        />
+
+        <Sheet.Handle backgroundColor="$color12" opacity={1} />
+        <Sheet.Frame
+          backgroundColor="$color2"
+          borderTopLeftRadius="$radius.9"
+          borderTopRightRadius="$radius.9"
+        >
+          {selectedPOI ? <PlaceDetails POI={selectedPOI} /> : null}
+        </Sheet.Frame>
+      </Sheet>
     </View>
   );
 }
