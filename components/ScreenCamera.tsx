@@ -7,8 +7,11 @@ import { Alert } from "react-native";
 import DisplaySelectedImage from "./displaySelectedImage";
 import { getImageURI, SendImage } from "@/services/imagenServices";
 import { View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export function ScreenCamera() {
+  const insets = useSafeAreaInsets();
+
   const [facing, setFacing] = useState<CameraType>("back");
   const [torch, setTorch] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
@@ -82,7 +85,12 @@ export function ScreenCamera() {
   };
 
   return (
-    <YStack flex={1} justifyContent="center" width="100%">
+    <YStack
+      flex={1}
+      justifyContent="center"
+      width="100%"
+      style={{ marginTop: insets.top }}
+    >
       <CameraView
         ref={camera}
         style={{ flex: 1 }}
@@ -102,22 +110,12 @@ export function ScreenCamera() {
         justifyContent="center" // Alinea todo al centro
         alignItems="center"
       >
-        <YStack alignItems="center">
-          <Button
-            circular
-            size="$2"
-            backgroundColor="transparent"
-            onPress={() => setTorch(!torch)}
-            icon={
-              torch ? (
-                <Zap size={28} color="white" />
-              ) : (
-                <ZapOff size={28} color="white" />
-              )
-            }
-          />
-          <Text style={{ color: "white", marginTop: 5 }}>Flash</Text>
-        </YStack>
+        <Button
+          circular
+          backgroundColor="transparent"
+          onPress={() => setTorch(!torch)}
+          icon={torch ? <Zap size="$2" /> : <ZapOff size="$2" />}
+        />
       </YStack>
 
       <YStack //ZOOM
@@ -167,36 +165,26 @@ export function ScreenCamera() {
         bottom={0}
         flexDirection="row"
         width="100%"
-        height={90}
         justifyContent="space-between"
+        backgroundColor="rgba(0, 0, 0, 0.5)"
         alignItems="center"
-        paddingHorizontal="$6"
+        padding="$4"
       >
         <Button
           circular
-          size="$6"
+          chromeless
           backgroundColor="transparent"
           onPress={pickImage}
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <YStack alignItems="center">
-            <ImageIcon size={32} color="white" />
-            <Text style={{ color: "white", marginTop: 5 }}>Galería</Text>
-          </YStack>
-        </Button>
+          icon={<ImageIcon size="$2" />}
+        ></Button>
 
         <Button
-          size="$6"
-          left="$3.5"
           backgroundColor="transparent"
           style={{
             borderColor: "white",
             borderWidth: 2,
             borderRadius: 35,
-            width: 50,
+            width: 70,
             height: 70,
             justifyContent: "center",
             alignItems: "center",
@@ -207,7 +195,6 @@ export function ScreenCamera() {
             elevation: 8,
           }}
           onPress={takePicture}
-          marginBottom="$5"
         >
           <View
             style={{
@@ -222,19 +209,11 @@ export function ScreenCamera() {
         </Button>
 
         <Button
-          left="$4"
+          circular
+          chromeless
           onPress={toggleCameraFacing}
-          backgroundColor="transparent"
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <YStack alignItems="center">
-            <Repeat size={32} color="white" />
-            <Text style={{ color: "white", marginTop: 5 }}>Voltear</Text>
-          </YStack>
-        </Button>
+          icon={<Repeat size="$2" />}
+        ></Button>
       </YStack>
 
       {selectedImage && (

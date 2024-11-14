@@ -44,6 +44,7 @@ export default function TabsLayout() {
         name="capture"
         options={{
           title: "Reconocer",
+          headerShown: false,
           tabBarIcon: ({ size, color }) => (
             <Focus size={`${size}px`} color={color} />
           ),
