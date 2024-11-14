@@ -14,7 +14,6 @@ export function ScreenCamera() {
   const [permission, requestPermission] = useCameraPermissions();
   const camera = useRef<CameraView>(null);
   const [selectedImage, setSelectedImage] = useState<string>("");
-  const lastTap = useRef<number>(0);
   const [zoom, setZoom] = useState(0);
 
   const pickImage = async () => {
@@ -64,14 +63,6 @@ export function ScreenCamera() {
       if (!photo) return;
       setSelectedImage(photo.uri);
     }
-  };
-
-  const handleDoubleTap = () => {
-    const now = Date.now();
-    if (now - lastTap.current < 300) {
-      toggleCameraFacing();
-    }
-    lastTap.current = now;
   };
 
   function toggleCameraFacing() {
