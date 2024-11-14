@@ -1,5 +1,5 @@
 import { Text, View } from "tamagui";
-import { ScreenCamera }  from "@/components/ScreenCamera";
+import { ScreenCamera } from "@/components/ScreenCamera";
 
 export default function Capture() {
   return (
@@ -10,7 +10,6 @@ export default function Capture() {
       height="100%"
     >
       <ScreenCamera />
-
     </View>
   );
 }

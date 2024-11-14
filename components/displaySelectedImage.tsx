@@ -1,7 +1,7 @@
-import React from 'react';
-import { Modal, View, Image, StyleSheet } from 'react-native';
-import { Trash, Send } from '@tamagui/lucide-icons';
-import { Button, YStack } from 'tamagui';
+import React from "react";
+import { Modal, View, Image, StyleSheet } from "react-native";
+import { Trash, Send } from "@tamagui/lucide-icons";
+import { Button, YStack } from "tamagui";
 
 interface Props {
   uri: string;
@@ -14,26 +14,27 @@ const DisplaySelectedImage = ({ uri, onSend, onCancel }: Props) => {
     <Modal visible={!!uri} animationType="slide" transparent={true}>
       <View style={styles.container}>
         <Image source={{ uri }} style={styles.image} resizeMode="contain" />
-        
+
         <YStack style={styles.buttonContainer}>
-          <Button 
-            icon={<Trash size={23} color="white" />} 
-            onPress={onCancel} 
-            size="$4" 
+          <Button
+            icon={<Trash size={23} color="white" />}
+            onPress={onCancel}
+            size="$4"
             backgroundColor="rgba(255, 59, 48, 0.7)"
             borderRadius={30}
             style={styles.button}
-          >Deshacer
+          >
+            Deshacer
           </Button>
-          <Button 
-            icon={<Send size={23} color="white" />} 
-            onPress={onSend} 
-            size="$4" 
+          <Button
+            icon={<Send size={23} color="white" />}
+            onPress={onSend}
+            size="$4"
             backgroundColor="rgba(0, 122, 255, 0.7)"
             borderRadius={50}
             style={styles.button}
           >
-          Enviar
+            Enviar
           </Button>
         </YStack>
       </View>
@@ -44,22 +45,22 @@ const DisplaySelectedImage = ({ uri, onSend, onCancel }: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.9)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   buttonContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 20,
-    left: '5%',
-    right: '5%',
-    top: '85%',
-    flexDirection: 'row',
-    justifyContent: 'center',
+    left: "5%",
+    right: "5%",
+    top: "85%",
+    flexDirection: "row",
+    justifyContent: "center",
     zIndex: 1,
   },
   button: {
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   editButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 30,
     right: 30,
     zIndex: 1,
