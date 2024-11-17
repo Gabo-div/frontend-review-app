@@ -86,7 +86,7 @@ export default function Explore() {
           matchContents: true,
           geolocationEnabled: true,
         }}
-        mapUrl={`https://maps.geoapify.com/v1/styles/osm-bright/style.json?apiKey=${process.env.MAP_KEY}`}
+        mapUrl={`${process.env.API_URL}/map/styles`}
         initialState={{
           // guayana city center
           latitude: 8.291058,
