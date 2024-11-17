@@ -22,9 +22,12 @@ export default function Header() {
       paddingBottom="$2"
       backgroundColor="$background"
     >
-      <Text fontSize="$6" fontWeight="medium">
-        Logo
-      </Text>
+      <View flexDirection="row" gap="$2" alignItems="center">
+        <Text fontSize="$8" color="$green11" fontWeight="bold">
+          Leif
+        </Text>
+      </View>
+
       <XStack>
         <Button chromeless>
           <Bell size="$1" />
