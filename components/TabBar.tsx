@@ -1,5 +1,6 @@
-import { Text, View, getToken } from "tamagui";
+import { View, getToken } from "tamagui";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import TabBarItem from "./TabBarItem";
 
 export default function TabBar({
   state,
@@ -10,24 +11,19 @@ export default function TabBar({
     <View
       flexDirection="row"
       bottom="$0"
-      gap="$2"
       left="$0"
       width="100%"
-      justifyContent="space-evenly"
       borderTopColor="$borderColor"
       borderTopWidth="$0.5"
-      paddingVertical="$2"
+      paddingVertical="$3"
+      paddingHorizontal="$2"
       backgroundColor="$background"
+      justifyContent="space-between"
     >
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
 
-        const label =
-          options.tabBarLabel !== undefined
-            ? options.tabBarLabel
-            : options.title !== undefined
-              ? options.title
-              : route.name;
+        const label = options.title ?? route.name;
 
         const isFocused = state.index === index;
 
@@ -44,25 +40,21 @@ export default function TabBar({
         };
 
         return (
-          <View alignItems="center" gap="$1" onPress={onPress} key={index}>
-            <View
-              height="$3"
-              paddingHorizontal="$3"
-              borderRadius="$radius.3"
-              justifyContent="center"
-              alignItems="center"
-              backgroundColor={isFocused ? "$color4" : "$background"}
-            >
-              {options.tabBarIcon
+          <TabBarItem
+            key={route.key}
+            isFocused={isFocused}
+            onPress={onPress}
+            label={label}
+            icon={
+              options.tabBarIcon
                 ? options.tabBarIcon({
                     focused: isFocused,
                     color: "$color12",
                     size: getToken("$1"),
                   })
-                : null}
-            </View>
-            <Text>{label}</Text>
-          </View>
+                : null
+            }
+          />
         );
       })}
     </View>

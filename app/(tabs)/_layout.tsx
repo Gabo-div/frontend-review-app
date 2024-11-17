@@ -25,8 +25,8 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: "Inicio",
-          tabBarIcon: ({ size, color }) => (
-            <House size={`${size}px`} color={color} />
+          tabBarIcon: ({ size, color, focused }) => (
+            <House size={`${size}px`} color={focused ? "$green11" : color} />
           ),
         }}
       />
@@ -35,8 +35,8 @@ export default function TabsLayout() {
         options={{
           title: "Explorar",
           headerShown: false,
-          tabBarIcon: ({ size, color }) => (
-            <Compass size={`${size}px`} color={color} />
+          tabBarIcon: ({ size, color, focused }) => (
+            <Compass size={`${size}px`} color={focused ? "$green11" : color} />
           ),
         }}
       />
@@ -45,8 +45,8 @@ export default function TabsLayout() {
         options={{
           title: "Reconocer",
           headerShown: false,
-          tabBarIcon: ({ size, color }) => (
-            <Focus size={`${size}px`} color={color} />
+          tabBarIcon: ({ size, color, focused }) => (
+            <Focus size={`${size}px`} color={focused ? "$green11" : color} />
           ),
         }}
       />
@@ -54,8 +54,8 @@ export default function TabsLayout() {
         name="profile"
         options={{
           title: "Perfil",
-          tabBarIcon: ({ size, color }) => (
-            <User size={`${size}px`} color={color} />
+          tabBarIcon: ({ size, color, focused }) => (
+            <User size={`${size}px`} color={focused ? "$green11" : color} />
           ),
         }}
       />
@@ -63,8 +63,11 @@ export default function TabsLayout() {
         name="options"
         options={{
           title: "Opciones",
-          tabBarIcon: ({ size, color }) => (
-            <SlidersHorizontal size={`${size}px`} color={color} />
+          tabBarIcon: ({ size, color, focused }) => (
+            <SlidersHorizontal
+              size={`${size}px`}
+              color={focused ? "$green11" : color}
+            />
           ),
         }}
       />
