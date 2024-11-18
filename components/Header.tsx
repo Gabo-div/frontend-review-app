@@ -1,6 +1,7 @@
 import { Button, Text, View, XStack } from "tamagui";
 import { Bell, MessageCircle } from "@tamagui/lucide-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Link } from "expo-router";
 
 export default function Header() {
   const insets = useSafeAreaInsets();
@@ -29,12 +30,16 @@ export default function Header() {
       </View>
 
       <XStack>
-        <Button chromeless>
-          <Bell size="$1" />
-        </Button>
-        <Button chromeless>
-          <MessageCircle size="$1" />
-        </Button>
+        <Link href="/notifications" asChild>
+          <Button chromeless>
+            <Bell size="$1" />
+          </Button>
+        </Link>
+        <Link href="/messages" asChild>
+          <Button chromeless>
+            <MessageCircle size="$1" />
+          </Button>
+        </Link>
       </XStack>
     </View>
   );

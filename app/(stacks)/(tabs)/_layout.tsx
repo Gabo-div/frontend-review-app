@@ -1,12 +1,6 @@
 import TabBar from "@/components/TabBar";
 import { Tabs } from "expo-router";
-import {
-  Compass,
-  Focus,
-  House,
-  SlidersHorizontal,
-  User,
-} from "@tamagui/lucide-icons";
+import { Compass, Focus, House, User } from "@tamagui/lucide-icons";
 import Header from "@/components/Header";
 import { useTheme } from "tamagui";
 
@@ -56,18 +50,6 @@ export default function TabsLayout() {
           title: "Perfil",
           tabBarIcon: ({ size, color, focused }) => (
             <User size={`${size}px`} color={focused ? "$green11" : color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="options"
-        options={{
-          title: "Opciones",
-          tabBarIcon: ({ size, color, focused }) => (
-            <SlidersHorizontal
-              size={`${size}px`}
-              color={focused ? "$green11" : color}
-            />
           ),
         }}
       />
