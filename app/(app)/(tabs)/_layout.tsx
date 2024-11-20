@@ -3,6 +3,7 @@ import { Tabs } from "expo-router";
 import { Compass, Focus, House, User } from "@tamagui/lucide-icons";
 import Header from "@/components/Header";
 import { useTheme } from "tamagui";
+import ProfileHeader from "@/components/ProfileHeader";
 
 export default function TabsLayout() {
   const theme = useTheme();
@@ -48,6 +49,7 @@ export default function TabsLayout() {
         name="profile"
         options={{
           title: "Perfil",
+          header: () => <ProfileHeader />,
           tabBarIcon: ({ size, color, focused }) => (
             <User size={`${size}px`} color={focused ? "$green11" : color} />
           ),
