@@ -30,6 +30,12 @@
 - React Query
 - Tamagui
 
+### Variables De Entorno
+
+Para ejecutar este proyecto, necesitarás agregar las siguientes variables de entorno en tu `.env` en la raíz del proyecto:
+
+- `API_URL`: URL en la cual se está ejecutando el servidor. (Normalmente, será la IP local de tu computadora `http://192.168.1.x:8080` o el localhost `http://localhost:8080`)
+
 ### Instalación
 
 1. Clonar el repositorio:
