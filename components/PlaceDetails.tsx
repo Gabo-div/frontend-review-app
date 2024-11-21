@@ -1,5 +1,5 @@
 import { POI } from "@/models/POI";
-import { Place } from "@/models/Place";
+import { placeSchema } from "@/models/Place";
 import {
   Bookmark,
   CornerUpRight,
@@ -11,13 +11,15 @@ import {
   Button,
   Image,
   ScrollView,
-  Separator,
   Spinner,
   Text,
   View,
   useTheme,
 } from "tamagui";
 import Review from "./home/Review";
+import axios from "axios";
+import qs from "qs";
+import PlaceDetailsContacts from "./PlaceDetailsContacts";
 
 interface Props {
   POI: POI;
@@ -26,20 +28,20 @@ interface Props {
 export default function PlaceDetails({ POI }: Props) {
   const theme = useTheme();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["place", POI.placeId],
-    queryFn: () =>
-      new Promise<Place>((resolve) =>
-        setTimeout(
-          () =>
-            resolve({
-              name: POI.name,
-              placeId: POI.placeId,
-              coordinate: POI.coordinate,
-            }),
-          1000,
-        ),
-      ),
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["place", POI.coordinate],
+    queryFn: async () => {
+      const params = {
+        lat: POI.coordinate.latitude,
+        lon: POI.coordinate.longitude,
+      };
+
+      const url = `${process.env.API_URL}/places?${qs.stringify(params)}`;
+      const res = await axios.get(url);
+      const parsed = placeSchema.array().parse(res.data.data);
+
+      return parsed[0];
+    },
   });
 
   return (
@@ -49,16 +51,35 @@ export default function PlaceDetails({ POI }: Props) {
           <Spinner size="large" color="$color" />
         </View>
       ) : null}
+
+      {error ? (
+        <View
+          flex={1}
+          alignItems="center"
+          justifyContent="center"
+          paddingHorizontal="$4"
+          gap="$4"
+        >
+          <Text textWrap="balance" textAlign="center" color="$red11">
+            Ha ocurrido un error obteniendo la información del lugar.
+          </Text>
+          <Button onPress={() => refetch()}>Reintentar</Button>
+        </View>
+      ) : null}
+
       {data ? (
         <View>
           <View
-            gap="$4"
+            gap="$2"
             borderBottomColor="$borderColor"
             borderBottomWidth="$0.5"
             padding="$4"
           >
             <Text fontSize="$8" numberOfLines={2}>
-              {data.name}
+              {data.details.name}
+            </Text>
+            <Text fontSize="$4" color="$color11" textTransform="capitalize">
+              {data.details.category.replaceAll("_", " ")}
             </Text>
             <View gap="$1.5">
               <View flexDirection="row" alignItems="center" gap="$2">
@@ -79,25 +100,9 @@ export default function PlaceDetails({ POI }: Props) {
                   (83)
                 </Text>
               </View>
-              <Text fontSize="$1" color="$color11">
-                Centro comercial
-              </Text>
-              <View flexDirection="row" gap="$2" alignItems="center">
-                <Text fontSize="$1" color="$red11">
-                  Cerrado
-                </Text>
-                <Separator
-                  alignSelf="stretch"
-                  vertical
-                  borderColor="$color8"
-                  marginVertical="$1"
-                />
-                <Text fontSize="$1" color="$color11">
-                  Abre a las 9 AM
-                </Text>
-              </View>
             </View>
-            <View>
+
+            <View marginTop="$2">
               <ScrollView horizontal>
                 <View flexDirection="row" gap="$2">
                   <Button themeInverse size="$3.5" icon={<MessageSquarePlus />}>
@@ -116,10 +121,15 @@ export default function PlaceDetails({ POI }: Props) {
 
           <View height="100%">
             <ScrollView>
-              <View gap="$4">
+              <View gap="$4" paddingTop="$4">
+                <PlaceDetailsContacts
+                  address={data.details.address}
+                  contacts={data.details.contacts}
+                />
+
                 <View>
                   <ScrollView horizontal>
-                    <View flexDirection="row" gap="$4" padding="$4">
+                    <View flexDirection="row" gap="$4" paddingHorizontal="$4">
                       <View
                         borderRadius="$radius.4"
                         overflow="hidden"
