@@ -1,5 +1,4 @@
 import { POI } from "@/models/POI";
-import { placeSchema } from "@/models/Place";
 import {
   Bookmark,
   CornerUpRight,
@@ -17,9 +16,9 @@ import {
   useTheme,
 } from "tamagui";
 import Review from "./home/Review";
-import axios from "axios";
-import qs from "qs";
+
 import PlaceDetailsContacts from "./PlaceDetailsContacts";
+import { getPlaceByCoordinate } from "@/services/places";
 
 interface Props {
   POI: POI;
@@ -30,18 +29,7 @@ export default function PlaceDetails({ POI }: Props) {
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["place", POI.coordinate],
-    queryFn: async () => {
-      const params = {
-        lat: POI.coordinate.latitude,
-        lon: POI.coordinate.longitude,
-      };
-
-      const url = `${process.env.API_URL}/places?${qs.stringify(params)}`;
-      const res = await axios.get(url);
-      const parsed = placeSchema.array().parse(res.data.data);
-
-      return parsed[0];
-    },
+    queryFn: () => getPlaceByCoordinate(POI.coordinate),
   });
 
   return (
