@@ -54,6 +54,12 @@ export default function StacksLayout() {
           title: "Mensajes",
         }}
       />
+      <Stack.Screen
+        name="chat"
+        options={{
+          title: "Chat",
+        }}
+      />
     </Stack>
   );
 }
