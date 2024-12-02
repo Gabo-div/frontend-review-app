@@ -128,7 +128,7 @@ export function ScreenCamera() {
         flexDirection="row"
         width="auto"
         height={50}
-        justifyContent="center" // Alinea todo al centro
+        justifyContent="center" 
         alignItems="center"
       >
         <YStack alignItems="center">
