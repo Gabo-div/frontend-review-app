@@ -1,5 +1,5 @@
 import { View } from "tamagui";
-import { ScreenCamera } from "@/components/ScreenCamera";
+import { ScreenCamera } from "@/components/capture/ScreenCamera";
 
 export default function Capture() {
   return (

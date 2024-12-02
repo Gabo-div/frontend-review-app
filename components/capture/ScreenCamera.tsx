@@ -1,23 +1,39 @@
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Image as ImageIcon, Zap, ZapOff, Repeat } from "@tamagui/lucide-icons";
-import { Button, Stack, YStack, Text, Slider } from "tamagui";
+import { Button, YStack, Text, Slider } from "tamagui";
 import * as ImagePicker from "expo-image-picker";
 import { Alert } from "react-native";
 import DisplaySelectedImage from "./displaySelectedImage";
 import { getImageURI, SendImage } from "@/services/imagenServices";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  PinchGestureHandler,
+  GestureHandlerRootView,
+} from "react-native-gesture-handler";
 
 export function ScreenCamera() {
   const insets = useSafeAreaInsets();
 
+  const [hasPermission, setHasPermission] = useState(false);
   const [facing, setFacing] = useState<CameraType>("back");
   const [torch, setTorch] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
   const camera = useRef<CameraView>(null);
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [zoom, setZoom] = useState(0);
+
+  useEffect(() => {
+    (async () => {
+      if (!permission) {
+        const { granted } = await requestPermission();
+        setHasPermission(granted);
+      } else {
+        setHasPermission(permission.granted);
+      }
+    })();
+  }, [permission, requestPermission]);
 
   const pickImage = async () => {
     // Solicitar permiso para acceder a la galería
@@ -44,21 +60,6 @@ export function ScreenCamera() {
     }
   };
 
-  if (!permission) {
-    return <Stack />;
-  }
-
-  if (!permission.granted) {
-    return (
-      <YStack flex={1} justifyContent="center" alignContent="center">
-        <Text paddingBottom="$2">
-          We need your permission to show the camera
-        </Text>
-        <Button onPress={requestPermission}> grant permission </Button>
-      </YStack>
-    );
-  }
-
   const takePicture = async () => {
     if (camera) {
       const photo = await camera.current?.takePictureAsync();
@@ -84,6 +85,20 @@ export function ScreenCamera() {
     }
   };
 
+  if (!hasPermission) {
+    return (
+      <View
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      />
+    );
+  }
+
+  // const handlePinchGesture = (event: { nativeEvent: { scale: any } }) => {
+  //   const scale = event.nativeEvent.scale;
+  //   const newZoom = Math.min(Math.max(zoom + (scale - 1) * 0.1, 0), 1);
+  //   setZoom(newZoom);
+  // };
+
   return (
     <YStack
       flex={1}
@@ -91,14 +106,20 @@ export function ScreenCamera() {
       width="100%"
       style={{ marginTop: insets.top }}
     >
-      <CameraView
-        ref={camera}
-        style={{ flex: 1 }}
-        facing={facing}
-        enableTorch={torch}
-        zoom={zoom}
-        flash="auto"
-      ></CameraView>
+      {/* <GestureHandlerRootView style={{ flex: 1 }}> */}
+      {/* <PinchGestureHandler onGestureEvent={handlePinchGesture}> */}
+      <View style={{ flex: 1 }}>
+        <CameraView
+          ref={camera}
+          style={{ flex: 1 }}
+          facing={facing}
+          enableTorch={torch}
+          zoom={zoom}
+          flash="auto"
+        ></CameraView>
+      </View>
+      {/* </PinchGestureHandler> */}
+      {/* </GestureHandlerRootView> */}
 
       <YStack //FLASH
         position="absolute"
@@ -107,15 +128,25 @@ export function ScreenCamera() {
         flexDirection="row"
         width="auto"
         height={50}
-        justifyContent="center" // Alinea todo al centro
+        justifyContent="center" 
         alignItems="center"
       >
-        <Button
-          circular
-          backgroundColor="transparent"
-          onPress={() => setTorch(!torch)}
-          icon={torch ? <Zap size="$2" /> : <ZapOff size="$2" />}
-        />
+        <YStack alignItems="center">
+          <Button
+            circular
+            size="$2"
+            backgroundColor="transparent"
+            onPress={() => setTorch(!torch)}
+            icon={
+              torch ? (
+                <Zap size={28} color="white" />
+              ) : (
+                <ZapOff size={28} color="white" />
+              )
+            }
+          />
+          <Text style={{ color: "white", marginTop: 5 }}>Flash</Text>
+        </YStack>
       </YStack>
 
       <YStack //ZOOM
@@ -172,19 +203,29 @@ export function ScreenCamera() {
       >
         <Button
           circular
-          chromeless
+          size="$6"
           backgroundColor="transparent"
           onPress={pickImage}
-          icon={<ImageIcon size="$2" />}
-        ></Button>
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <YStack alignItems="center">
+            <ImageIcon size={32} color="white" />
+            <Text style={{ color: "white", marginTop: 5 }}>Galería</Text>
+          </YStack>
+        </Button>
 
         <Button
+          size="$6"
+          left="$3.5"
           backgroundColor="transparent"
           style={{
             borderColor: "white",
             borderWidth: 2,
             borderRadius: 35,
-            width: 70,
+            width: 50,
             height: 70,
             justifyContent: "center",
             alignItems: "center",
@@ -195,6 +236,7 @@ export function ScreenCamera() {
             elevation: 8,
           }}
           onPress={takePicture}
+          marginBottom="$1"
         >
           <View
             style={{
@@ -209,11 +251,19 @@ export function ScreenCamera() {
         </Button>
 
         <Button
-          circular
-          chromeless
+          left="$4"
           onPress={toggleCameraFacing}
-          icon={<Repeat size="$2" />}
-        ></Button>
+          backgroundColor="transparent"
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <YStack alignItems="center">
+            <Repeat size={32} color="white" />
+            <Text style={{ color: "white", marginTop: 5 }}>Voltear</Text>
+          </YStack>
+        </Button>
       </YStack>
 
       {selectedImage && (
