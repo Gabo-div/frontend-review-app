@@ -1,6 +1,7 @@
 import { View, ScrollView } from "tamagui";
 import Review from "@/components/home/Review";
 
+
 export default function Main() {
   return (
     <ScrollView>
@@ -11,4 +12,4 @@ export default function Main() {
       </View>
     </ScrollView>
   );
-}
+} 

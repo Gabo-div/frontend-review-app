@@ -19,6 +19,7 @@
     "@vxrn/color-scheme": "^1.1.328",
     "axios": "^1.7.7",
     "color": "^4.2.3",
+    "date-fns": "^4.1.0",
     "expo": "~52.0.6",
     "expo-build-properties": "^0.13.1",
     "expo-camera": "~16.0.5",
@@ -27,6 +28,7 @@
     "expo-linear-gradient": "^14.0.1",
     "expo-location": "^18.0.1",
     "expo-router": "^4.0.5",
+    "expo-secure-store": "~14.0.0",
     "expo-status-bar": "~2.0.0",
     "maplibre-gl": "^4.7.1",
     "qs": "^6.13.1",
@@ -41,8 +43,7 @@
     "react-native-webview": "^13.12.2",
     "tamagui": "^1.116.12",
     "zod": "^3.23.8",
-    "zustand": "^5.0.1",
-    "expo-secure-store": "~14.0.0"
+    "zustand": "^5.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

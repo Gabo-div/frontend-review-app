@@ -7,8 +7,12 @@ import {
   User,
 } from "@tamagui/lucide-icons";
 import { Avatar, Button, Text, View } from "tamagui";
+import React from 'react';
+import SheetDemo from "../SheetDemo";
 
 export default function Review() {
+  const [isSheetOpen, setIsSheetOpen] = React.useState(false);
+
   return (
     <View padding="$4" backgroundColor="$color2" borderRadius="$4">
       <View flexDirection="row" gap="$2" alignItems="center">
@@ -45,13 +49,15 @@ export default function Review() {
         <Button chromeless>
           <ThumbsDown size="$1" />
         </Button>
-        <Button chromeless>
+        <Button chromeless onPress={() => setIsSheetOpen(true)}>
           <MessageCircle size="$1" />
         </Button>
         <Button chromeless>
           <Send size="$1" />
         </Button>
       </View>
+
+      <SheetDemo open={isSheetOpen} onOpenChange={setIsSheetOpen} />
     </View>
   );
 }
