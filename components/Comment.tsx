@@ -16,10 +16,9 @@ interface CommentProps {
   comment: string;
   userAvatar: string;
   hours: number;
-  replies: Array<any>;
+  replies: any[];
   likes: number;
   dislikes: number;
-
 }
 
 const Comment: React.FC<CommentProps> = ({
@@ -47,7 +46,6 @@ const Comment: React.FC<CommentProps> = ({
       setNewReply("");
     }
   };
-
 
   return (
     <YStack>

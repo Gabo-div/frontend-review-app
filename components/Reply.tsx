@@ -11,7 +11,6 @@ interface ReplyProps {
   dislikes: number;
 }
 
-
 const Reply: React.FC<ReplyProps> = ({
   user,
   comment,

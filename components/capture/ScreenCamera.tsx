@@ -8,10 +8,6 @@ import DisplaySelectedImage from "./displaySelectedImage";
 import { getImageURI, SendImage } from "@/services/imagenServices";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import {
-  PinchGestureHandler,
-  GestureHandlerRootView,
-} from "react-native-gesture-handler";
 
 export function ScreenCamera() {
   const insets = useSafeAreaInsets();
