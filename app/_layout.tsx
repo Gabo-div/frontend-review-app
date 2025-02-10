@@ -32,7 +32,7 @@ export default function Layout() {
           config={config}
           defaultTheme={currentTheme}
         >
-          <StatusBar style={isDark ? "light" : "dark"} />
+          <StatusBar style={!isDark ? "light" : "dark"} />
           <Slot />
         </TamaguiProvider>
       </QueryClientProvider>

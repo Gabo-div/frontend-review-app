@@ -15,14 +15,43 @@ import {
   View,
   useTheme,
 } from "tamagui";
-import Review from "./home/Review";
+import ReviewCard from "./home/ReviewCard";
 
 import PlaceDetailsContacts from "./PlaceDetailsContacts";
 import { getPlaceByCoordinate } from "@/services/places";
+import { Review } from "@/types/review";
 
 interface Props {
   POI: POI;
 }
+
+const reviews: Review[] = [
+  {
+    place: "Beijing House",
+    image:
+      "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?q=80&w=1548&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    content:
+      "El servicio es otro nivel. Los meseros son súper amables y atentos. Te hacen sentir como en casa desde el momento en que entras por la puerta.",
+    avatar: "https://avatars.githubusercontent.com/u/64453625?v=4",
+    name: "Gabriel Hernandez",
+    username: "_elgabo",
+    likes: 20,
+    dislikes: 10,
+    comments: 15,
+  },
+  {
+    place: "La Llovizna",
+    content:
+      "El parque es un verdadero refugio para los amantes de la naturaleza. Con senderos bien cuidados que serpentean a través de densos bosques y prados abiertos, es el lugar ideal para una caminata relajante.",
+    avatar:
+      "https://media.licdn.com/dms/image/v2/D4E03AQHVandjgMz3fw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1681950784018?e=1738800000&v=beta&t=JZuxdJM4lyVVPTlxVwsVjB7py-fZfFjlLQr__E82i7M",
+    name: "Inés Sánchez",
+    username: "_iness",
+    likes: 20,
+    dislikes: 10,
+    comments: 15,
+  },
+];
 
 export default function PlaceDetails({ POI }: Props) {
   const theme = useTheme();
@@ -56,7 +85,7 @@ export default function PlaceDetails({ POI }: Props) {
       ) : null}
 
       {data ? (
-        <View>
+        <View flex={1}>
           <View
             gap="$2"
             borderBottomColor="$borderColor"
@@ -107,7 +136,7 @@ export default function PlaceDetails({ POI }: Props) {
             </View>
           </View>
 
-          <View height="100%">
+          <View flex={1}>
             <ScrollView>
               <View gap="$4" paddingTop="$4">
                 <PlaceDetailsContacts
@@ -155,9 +184,9 @@ export default function PlaceDetails({ POI }: Props) {
                 </View>
 
                 <Text paddingHorizontal="$4">Reseñas</Text>
-                <View gap="$4">
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <Review key={i} />
+                <View gap="$4" paddingHorizontal="$4">
+                  {reviews.map((data, i) => (
+                    <ReviewCard data={data} key={i} elevation={4} />
                   ))}
                 </View>
               </View>
