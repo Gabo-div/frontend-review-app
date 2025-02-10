@@ -1,14 +1,6 @@
 import React, { useState } from "react";
-import {
-  YStack,
-  Paragraph,
-  Label,
-  XStack,
-  Image,
-  Button,
-  TextArea,
-} from "tamagui";
-import { ThumbsUp, ThumbsDown, Send } from "@tamagui/lucide-icons";
+import { YStack, Paragraph, XStack, Image, Text, View } from "tamagui";
+import { ThumbsUp, ThumbsDown } from "@tamagui/lucide-icons";
 import Reply from "./Reply";
 
 interface CommentProps {
@@ -31,93 +23,67 @@ const Comment: React.FC<CommentProps> = ({
   dislikes,
 }) => {
   const [showReplies, setShowReplies] = useState(false);
-  const [newReply, setNewReply] = useState("");
-
-  const handleAddReply = () => {
-    if (newReply) {
-      replies.push({
-        user: "You",
-        comment: newReply,
-        userAvatar: "https://imageplaceholder.net/600x400",
-        hours: 0,
-        likes: 0,
-        dislikes: 0,
-      });
-      setNewReply("");
-    }
-  };
 
   return (
     <YStack>
-      <XStack
-        marginLeft="$4"
-        marginTop="$4"
-        marginBottom="$4"
+      <View
+        padding="$4"
+        paddingBottom="0"
+        flexDirection="row"
         alignItems="flex-start"
         justifyContent="space-between"
+        style={{ width: "100%" }}
       >
         <Image
-          width={40}
-          height={40}
-          borderRadius={20}
+          width={35}
+          height={35}
+          borderRadius="$radius.9"
+          marginRight="$4"
           source={{ uri: userAvatar }}
-          marginTop="$4"
         />
-        <YStack width={180}>
-          <Label>
-            {user} {hours}
-          </Label>
-          <Paragraph>{comment}</Paragraph>
-          <Label
-            color={"$gray10Light"}
-            onPress={() => setShowReplies(!showReplies)}
-          >
-            {showReplies
-              ? `Ocultar respuestas (${replies.length})`
-              : `Responder (${replies.length})`}
-          </Label>
+
+        <YStack flex={1}>
+          <XStack gap="$2" alignItems="center">
+            <Text>{user}</Text>
+            <Text color="$color10">{hours}h</Text>
+          </XStack>
+
+          <Paragraph fontSize="$3" lineHeight="$3" marginTop="$2">
+            {comment}
+          </Paragraph>
+
+          <View flexDirection="row" gap="$4" alignItems="center" marginTop="$2">
+            <View alignItems="center" flexDirection="row" gap="$2">
+              <ThumbsUp size={15} color="$color11" />
+              <Text color="$color11">{likes.toString()}</Text>
+            </View>
+
+            <View alignItems="center" flexDirection="row" gap="$2">
+              <ThumbsDown size={15} color="$color11" />
+              <Text color="$color11">{dislikes.toString()}</Text>
+            </View>
+            <Text color="$color11">Responder</Text>
+          </View>
+
+          {replies.length ? (
+            <Text
+              marginTop="$4"
+              color="$gray10Light"
+              textAlign="center"
+              onPress={() => setShowReplies(!showReplies)}
+            >
+              {showReplies
+                ? `Ocultar respuestas (${replies.length})`
+                : `Ver respuestas (${replies.length})`}
+            </Text>
+          ) : null}
         </YStack>
-        <YStack>
-          <Button chromeless>
-            <ThumbsUp size="$1" />
-            <Label>{likes}</Label>
-          </Button>
-          <Button chromeless>
-            <ThumbsDown size="$1" />
-            <Label>{dislikes}</Label>
-          </Button>
-        </YStack>
-      </XStack>
+      </View>
       {showReplies && (
-        <YStack marginLeft="$4">
+        <YStack marginLeft="$8">
           {replies.map((reply, index) => (
             <Reply key={index} {...reply} />
           ))}
-          <XStack
-            width="100%"
-            gap="$4"
-            marginTop="$4"
-            marginBottom="$4"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Image
-              width={30}
-              height={30}
-              borderRadius={15}
-              source={{ uri: "https://imageplaceholder.net/600x400" }}
-            />
-            <TextArea
-              padding="$2"
-              borderWidth={2}
-              value={newReply}
-              onChangeText={setNewReply}
-              placeholder="Agrega una respuesta..."
-            />
-            <Button onPress={handleAddReply}>
-              <Send size="$1" />
-            </Button>
-          </XStack>
         </YStack>
       )}
     </YStack>

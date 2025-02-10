@@ -8,7 +8,7 @@ import {
   User,
 } from "@tamagui/lucide-icons";
 import { Avatar, Button, Image, Text, View } from "tamagui";
-import SheetDemo from "../SheetDemo";
+import CommentsSheet from "../CommentsSheet";
 import { useState } from "react";
 
 interface Props {
@@ -98,7 +98,7 @@ export default function ReviewCard({ data, elevation }: Props) {
         </View>
       </View>
 
-      <SheetDemo open={isSheetOpen} onOpenChange={setIsSheetOpen} />
+      <CommentsSheet open={isSheetOpen} onOpenChange={setIsSheetOpen} />
     </>
   );
 }

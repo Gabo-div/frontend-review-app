@@ -1,5 +1,5 @@
 import React from "react";
-import { XStack, Paragraph, Label, Image, Button, YStack } from "tamagui";
+import { YStack, Paragraph, XStack, Image, Text, View } from "tamagui";
 import { ThumbsUp, ThumbsDown } from "@tamagui/lucide-icons";
 
 interface ReplyProps {
@@ -18,37 +18,48 @@ const Reply: React.FC<ReplyProps> = ({
   hours,
   likes,
   dislikes,
-}) => (
-  <XStack
-    marginTop="$2"
-    marginLeft="$8"
-    alignItems="flex-start"
-    justifyContent="space-between"
-  >
-    <Image
-      width={30}
-      height={30}
-      borderRadius={15}
-      source={{ uri: userAvatar }}
-      marginRight="$2"
-    />
-    <YStack width={180}>
-      <Label>
-        {user} {hours}
-      </Label>
-      <Paragraph>{comment}</Paragraph>
-    </YStack>
-    <YStack>
-      <Button chromeless>
-        <ThumbsUp size="$1" />
-        <Label>{likes}</Label>
-      </Button>
-      <Button chromeless>
-        <ThumbsDown size="$1" />
-        <Label>{dislikes}</Label>
-      </Button>
-    </YStack>
-  </XStack>
-);
+}) => {
+  return (
+    <View
+      padding="$4"
+      flexDirection="row"
+      alignItems="flex-start"
+      justifyContent="space-between"
+      style={{ width: "100%" }}
+    >
+      <Image
+        width={35}
+        height={35}
+        borderRadius="$radius.9"
+        marginRight="$4"
+        source={{ uri: userAvatar }}
+      />
+
+      <YStack flex={1}>
+        <XStack gap="$2" alignItems="center">
+          <Text>{user}</Text>
+          <Text color="$color10">{hours}h</Text>
+        </XStack>
+
+        <Paragraph fontSize="$3" lineHeight="$3" marginTop="$2">
+          {comment}
+        </Paragraph>
+
+        <View flexDirection="row" gap="$4" alignItems="center" marginTop="$2">
+          <View alignItems="center" flexDirection="row" gap="$2">
+            <ThumbsUp size={15} color="$color11" />
+            <Text color="$color11">{likes.toString()}</Text>
+          </View>
+
+          <View alignItems="center" flexDirection="row" gap="$2">
+            <ThumbsDown size={15} color="$color11" />
+            <Text color="$color11">{dislikes.toString()}</Text>
+          </View>
+          <Text color="$color11">Responder</Text>
+        </View>
+      </YStack>
+    </View>
+  );
+};
 
 export default Reply;

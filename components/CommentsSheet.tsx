@@ -9,7 +9,7 @@ interface SheetDemoProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export const SheetDemo = ({ open, onOpenChange }: SheetDemoProps) => {
+export const CommentsSheet = ({ open, onOpenChange }: SheetDemoProps) => {
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState<any[]>([]);
 
@@ -23,8 +23,8 @@ export const SheetDemo = ({ open, onOpenChange }: SheetDemoProps) => {
           userAvatar: "https://imageplaceholder.net/600x400",
           hours: 3,
           replies: [],
-          likes: 0,
-          dislikes: 0,
+          likes: 600,
+          dislikes: 600,
         },
       ]);
       setNewComment("");
@@ -57,10 +57,11 @@ export const SheetDemo = ({ open, onOpenChange }: SheetDemoProps) => {
           </ScrollView>
           <XStack
             width="100%"
-            gap="$4"
-            marginBottom="$4"
-            justifyContent="center"
+            gap="$3"
             alignItems="center"
+            padding="$4"
+            borderTopWidth={1}
+            borderTopColor="$color6"
           >
             <Image
               width={40}
@@ -69,10 +70,10 @@ export const SheetDemo = ({ open, onOpenChange }: SheetDemoProps) => {
               src="https://imageplaceholder.net/600x400"
             />
             <TextArea
-              padding="$2"
-              borderWidth={2}
+              flex={1}
               value={newComment}
               onChangeText={setNewComment}
+              padding="$2.5"
               placeholder="Agrega un comentario..."
             />
             <Button onPress={handleAddComment}>
@@ -85,4 +86,4 @@ export const SheetDemo = ({ open, onOpenChange }: SheetDemoProps) => {
   );
 };
 
-export default SheetDemo;
+export default CommentsSheet;
