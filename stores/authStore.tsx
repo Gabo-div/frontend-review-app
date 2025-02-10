@@ -30,6 +30,8 @@ export const useAuthStore = create(
         let success = true;
 
         try {
+          console.log(`${process.env.API_URL}/auth/login`);
+          console.log(username, password);
           const data = await axios.post(`${process.env.API_URL}/auth/login`, {
             username,
             password,
