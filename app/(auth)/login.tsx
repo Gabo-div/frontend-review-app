@@ -31,7 +31,6 @@ export default function Login() {
   });
 
   const onSubmit = async (data: Inputs) => {
-    console.log(data);
     const success = await authStore.login(data);
     setIsError(!success);
   };
