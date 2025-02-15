@@ -1,4 +1,4 @@
-import { Review } from "@/types/review";
+import { Review } from "@/models/Review";
 import {
   Ellipsis,
   MapPin,

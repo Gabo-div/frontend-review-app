@@ -3,10 +3,15 @@ import axios from "axios";
 import { z } from "zod";
 import { persist, createJSONStorage, StateStorage } from "zustand/middleware";
 import * as SecureStore from "expo-secure-store";
+import { jwtDecode } from "jwt-decode";
 
 interface AuthStore {
   token: string | null;
   authenticated: boolean;
+  session: {
+    user_id: number;
+    username: string;
+  } | null;
   isLoading: boolean;
   login: (loginData: {
     username: string;
@@ -20,6 +25,7 @@ export const useAuthStore = create(
     (set) => ({
       token: null,
       authenticated: false,
+      session: null,
       isLoading: false,
       login: async ({ username, password }) => {
         set((state) => ({
@@ -43,9 +49,19 @@ export const useAuthStore = create(
             })
             .parse(data.data);
 
+          const decoded = jwtDecode(result.token);
+
+          const parsedToken = z
+            .object({
+              user_id: z.number(),
+              username: z.string(),
+            })
+            .parse(decoded);
+
           set({
             token: result.token,
             authenticated: true,
+            session: parsedToken,
           });
         } catch (error) {
           console.log("login error", error);
@@ -53,6 +69,7 @@ export const useAuthStore = create(
           set({
             token: null,
             authenticated: false,
+            session: null,
           });
 
           success = false;

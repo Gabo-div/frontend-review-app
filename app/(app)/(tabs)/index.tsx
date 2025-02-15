@@ -1,6 +1,6 @@
 import { View, ScrollView } from "tamagui";
 import ReviewCard from "@/components/home/ReviewCard";
-import { Review } from "@/types/review";
+import { Review } from "@/models/Review";
 
 const reviews: Review[] = [
   {

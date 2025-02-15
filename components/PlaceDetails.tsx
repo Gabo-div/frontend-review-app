@@ -19,7 +19,7 @@ import ReviewCard from "./home/ReviewCard";
 
 import PlaceDetailsContacts from "./PlaceDetailsContacts";
 import { getPlaceByCoordinate } from "@/services/places";
-import { Review } from "@/types/review";
+import { Review } from "@/models/Review";
 
 interface Props {
   POI: POI;

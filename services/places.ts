@@ -13,6 +13,7 @@ export const getPlaceByCoordinate = async (
 
   const url = `${process.env.API_URL}/places?${qs.stringify(params)}`;
   const res = await axios.get(url);
+
   const parsed = placeSchema.array().parse(res.data.data);
 
   return parsed[0];
