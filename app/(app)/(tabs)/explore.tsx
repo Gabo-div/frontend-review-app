@@ -6,10 +6,12 @@ import DomMap, { DomMapRef, MapState } from "@/components/explore/DomMap";
 import PlaceDetails from "@/components/PlaceDetails";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Compass } from "@tamagui/lucide-icons";
+import { api } from "@/lib/api";
 
 export default function Explore() {
   const insets = useSafeAreaInsets();
 
+  const [mapStyles, setMapStyles] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [mapState, setMapState] = useState<MapState | null>(null);
   const [selectedPOI, setSelectedPOI] = useState<POI | null>(null);
@@ -61,6 +63,17 @@ export default function Explore() {
     })();
   }, [isLoading]);
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await api.get("/map/styles");
+        setMapStyles(res.data);
+      } catch (error) {
+        console.log({ error });
+      }
+    })();
+  }, []);
+
   const theme = useTheme();
 
   const isSheetOpen = !!selectedPOI;
@@ -86,7 +99,7 @@ export default function Explore() {
           matchContents: true,
           geolocationEnabled: true,
         }}
-        mapUrl={`${process.env.API_URL}/map/styles`}
+        mapStyles={mapStyles}
         initialState={{
           // guayana city center
           latitude: 8.291058,

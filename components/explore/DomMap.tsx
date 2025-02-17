@@ -7,7 +7,7 @@ import { POI } from "@/models/POI";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 interface Props {
-  mapUrl: string;
+  mapStyles: any;
   initialState: InitialState;
   styles?: Styles;
   onLoad?: () => void;
@@ -67,7 +67,10 @@ export interface DomMapRef extends DOMImperativeFactory {
 export default forwardRef<
   DomMapRef,
   Props & { dom?: import("expo/dom").DOMProps }
->(function ({ onLoad, onPoiClick, onMove, initialState, styles, mapUrl }, ref) {
+>(function (
+  { onLoad, onPoiClick, onMove, initialState, styles, mapStyles },
+  ref,
+) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<Map | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -116,13 +119,13 @@ export default forwardRef<
     setMap(
       new Map({
         container: mapRef.current,
-        style: mapUrl,
+        style: mapStyles,
         center: [initialState.longitude, initialState.latitude],
         zoom: initialState.zoom,
         attributionControl: false,
       }),
     );
-  }, [map, mapRef, initialState, mapUrl]);
+  }, [map, mapRef, initialState, mapStyles]);
 
   useEffect(() => {
     if (!map || isLoading || !styles) return;

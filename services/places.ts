@@ -1,6 +1,6 @@
+import { api } from "@/lib/api";
 import { Coordinate } from "@/models/Coordinate";
 import { Place, placeSchema } from "@/models/Place";
-import axios from "axios";
 import qs from "qs";
 
 export const getPlaceByCoordinate = async (
@@ -11,8 +11,8 @@ export const getPlaceByCoordinate = async (
     lon: coordinate.longitude,
   };
 
-  const url = `${process.env.API_URL}/places?${qs.stringify(params)}`;
-  const res = await axios.get(url);
+  const url = `/places?${qs.stringify(params)}`;
+  const res = await api.get(url);
 
   const parsed = placeSchema.array().parse(res.data.data);
 

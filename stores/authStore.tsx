@@ -1,9 +1,9 @@
 import { create } from "zustand";
-import axios from "axios";
 import { z } from "zod";
 import { persist, createJSONStorage, StateStorage } from "zustand/middleware";
 import * as SecureStore from "expo-secure-store";
 import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 interface AuthStore {
   token: string | null;
@@ -36,8 +36,6 @@ export const useAuthStore = create(
         let success = true;
 
         try {
-          console.log(`${process.env.API_URL}/auth/login`);
-          console.log(username, password);
           const data = await axios.post(`${process.env.API_URL}/auth/login`, {
             username,
             password,
