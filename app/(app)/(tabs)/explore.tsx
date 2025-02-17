@@ -1,4 +1,4 @@
-import { Input, View, Sheet, Spinner, Button, useTheme } from "tamagui";
+import { View, Sheet, Spinner, Button, useTheme } from "tamagui";
 import { useEffect, useRef, useState } from "react";
 import * as Location from "expo-location";
 import { POI } from "@/models/POI";
@@ -7,6 +7,7 @@ import PlaceDetails from "@/components/PlaceDetails";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Compass } from "@tamagui/lucide-icons";
 import { api } from "@/lib/api";
+import SearchInput from "@/components/explore/SearchInput";
 
 export default function Explore() {
   const insets = useSafeAreaInsets();
@@ -131,7 +132,7 @@ export default function Explore() {
         <View
           position="absolute"
           zIndex={10}
-          top="#0"
+          top="$0"
           left="$0"
           right="$0"
           padding="$2"
@@ -143,7 +144,7 @@ export default function Explore() {
             enterStyle={{ opacity: 0 }}
             exitStyle={{ opacity: 0 }}
           >
-            <Input placeholder="Busca un lugar..." />
+            <SearchInput />
           </View>
 
           {mapState && (mapState.pitch !== 0 || mapState.bearing !== 0) ? (
@@ -192,7 +193,9 @@ export default function Explore() {
           borderTopLeftRadius="$radius.9"
           borderTopRightRadius="$radius.9"
         >
-          {selectedPOI ? <PlaceDetails POI={selectedPOI} /> : null}
+          {selectedPOI ? (
+            <PlaceDetails coordinate={selectedPOI.coordinate} />
+          ) : null}
         </Sheet.Frame>
       </Sheet>
     </View>

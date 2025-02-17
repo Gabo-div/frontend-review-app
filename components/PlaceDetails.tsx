@@ -1,4 +1,3 @@
-import { POI } from "@/models/POI";
 import {
   Bookmark,
   CornerUpRight,
@@ -20,9 +19,10 @@ import ReviewCard from "./home/ReviewCard";
 import PlaceDetailsContacts from "./PlaceDetailsContacts";
 import { getPlaceByCoordinate } from "@/services/places";
 import { Review } from "@/models/Review";
+import { Coordinate } from "@/models/Coordinate";
 
 interface Props {
-  POI: POI;
+  coordinate: Coordinate;
 }
 
 const reviews: Review[] = [
@@ -53,12 +53,12 @@ const reviews: Review[] = [
   },
 ];
 
-export default function PlaceDetails({ POI }: Props) {
+export default function PlaceDetails({ coordinate }: Props) {
   const theme = useTheme();
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["place", POI.coordinate],
-    queryFn: () => getPlaceByCoordinate(POI.coordinate),
+    queryKey: ["place", coordinate],
+    queryFn: () => getPlaceByCoordinate(coordinate),
   });
 
   return (

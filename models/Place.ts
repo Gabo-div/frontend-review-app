@@ -11,7 +11,7 @@ const placeContactsSchema = z.object({
 
 export type PlaceContacts = z.infer<typeof placeContactsSchema>;
 
-const placeDetailsSchema = z.object({
+export const placeDetailsSchema = z.object({
   name: z.string(),
   maps_id: z.string(),
   category: z.string(),

@@ -60,6 +60,18 @@ export default function StacksLayout() {
           title: "Chat",
         }}
       />
+      <Stack.Screen
+        name="search"
+        options={{
+          title: "Buscar",
+        }}
+      />
+      <Stack.Screen
+        name="place"
+        options={{
+          title: "Lugar",
+        }}
+      />
     </Stack>
   );
 }
