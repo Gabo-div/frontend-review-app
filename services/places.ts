@@ -11,7 +11,7 @@ export const getPlaceByCoordinate = async (
     lon: coordinate.longitude,
   };
 
-  const url = `/places?${qs.stringify(params)}`;
+  const url = `/places/details?${qs.stringify(params)}`;
   const res = await api.get(url);
 
   const parsed = placeSchema.array().parse(res.data.data);
