@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/stores/authStore";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 const createApiInstace = () => {
   const instance = axios.create({
@@ -16,17 +16,16 @@ const createApiInstace = () => {
     return config;
   });
 
-  instance.interceptors.response.use((res) => {
-    if (res.status === 401) {
-      useAuthStore.setState({
-        token: null,
-        authenticated: false,
-        session: null,
-      });
-    }
+  instance.interceptors.response.use(
+    (res) => res,
+    (error) => {
+      if (error instanceof AxiosError && error.status === 401) {
+        useAuthStore.getState().logout();
+      }
 
-    return res;
-  });
+      return Promise.reject(error);
+    },
+  );
 
   return instance;
 };

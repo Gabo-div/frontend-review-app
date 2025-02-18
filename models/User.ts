@@ -2,13 +2,18 @@ import { z } from "zod";
 
 export const userSchema = z.object({
   id: z.number(),
-  name: z.string(),
+  username: z.string(),
+  displayName: z.string(),
+  description: z.string().optional(),
   email: z.string(),
-  passwoord: z.string(),
-  description: z.string(),
+  verified: z.boolean(),
+  reviewsCount: z.number(),
   followersCount: z.number(),
-  followedCount: z.number(),
-  postCount: z.number(),
+  followingCount: z.number(),
+  bookmarksCount: z.number(),
+  visitedCount: z.number(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
 });
 
 export type User = z.infer<typeof userSchema>;

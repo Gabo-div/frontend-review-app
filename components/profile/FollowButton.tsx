@@ -73,7 +73,7 @@ export default function FollowButton({ user }: Props) {
             <YStack gap="$4" alignItems="center" alignContent="center">
               <AlertDialog.Title size="$6">DEJAR DE SEGUIR</AlertDialog.Title>
               <AlertDialog.Description textAlign="center">
-                ¿Estás seguro de que deseas dejar de seguir a {user.name}?
+                ¿Estás seguro de que deseas dejar de seguir a {user.username}?
               </AlertDialog.Description>
 
               <XStack gap="$3" alignItems="center" alignContent="center">

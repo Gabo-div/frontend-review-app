@@ -14,6 +14,7 @@ import {
 
 import EditBotton from "@/components/profile/EditButton";
 import FollowButton from "@/components/profile/FollowButton";
+import { User as UserType } from "@/models/User";
 
 const margen = 22;
 
@@ -21,15 +22,19 @@ let isCurrentUser = false; //Variar de usuario = true / visitante = false
 
 const { width } = Dimensions.get("window");
 
-const userData = {
+const userData: UserType = {
   id: 1,
-  name: "name",
+  verified: true,
+  username: "name",
+  displayName: "displayName",
   email: "email",
-  passwoord: "password",
-  description: "description",
+  reviewsCount: 10,
   followersCount: 10,
-  followedCount: 10,
-  postCount: 10,
+  followingCount: 10,
+  bookmarksCount: 10,
+  visitedCount: 10,
+  createdAt: new Date(),
+  updatedAt: new Date(),
 };
 
 const TextNum = styled(Text, {
@@ -105,7 +110,7 @@ export default function Profile() {
 
             {/* Valores Numericos */}
             <TextNum marginLeft="$4">
-              {userData.postCount}
+              {userData.reviewsCount}
               {"\n"}
               <TextCursiva>Reseñas</TextCursiva>
             </TextNum>
@@ -114,7 +119,7 @@ export default function Profile() {
               <TextCursiva>Seguidores</TextCursiva>
             </TextNum>
             <TextNum>
-              {userData.followedCount}
+              {userData.followingCount}
               {"\n"}
               <TextCursiva>Seguidos</TextCursiva>
             </TextNum>
@@ -122,12 +127,12 @@ export default function Profile() {
 
           {/* Nombre de Usuario */}
           <Text marginLeft="$2" fontSize="$5" fontWeight="bold" color="$color">
-            {userData.name}
+            {userData.username}
           </Text>
 
           {/* Bibliografía */}
           <Text marginLeft="$2" fontSize="$4" color="$color">
-            {userData.description}
+            {userData.description || "Sin descripción."}
           </Text>
         </YStack>
 

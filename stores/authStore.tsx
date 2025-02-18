@@ -84,6 +84,7 @@ export const useAuthStore = create(
         set({
           token: null,
           authenticated: false,
+          session: null,
         });
       },
     }),
