@@ -97,8 +97,11 @@ export default function ReviewCard({ data, elevation }: Props) {
           </View>
         </View>
       </View>
-
-      <CommentsSheet open={isSheetOpen} onOpenChange={setIsSheetOpen} />
+      <CommentsSheet
+        reviewId={data.id}
+        open={isSheetOpen}
+        onOpenChange={setIsSheetOpen}
+      />
     </>
   );
 }

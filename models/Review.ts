@@ -1,6 +1,7 @@
 import z from "zod";
 
 export const reviewSchema = z.object({
+  id: z.number(),
   image: z.string().optional(),
   content: z.string(),
   place: z.string(),
