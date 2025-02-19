@@ -3,17 +3,17 @@ import { Stack } from "expo-router";
 import { Spinner, View, useTheme } from "tamagui";
 
 export default function AuthLayout() {
-  const { isReady, isAuthenticated } = useAuthRedirection(
-    (isAuthenticated, redirect) => {
-      if (isAuthenticated) {
-        redirect("/");
-      }
-    },
-  );
+  const { isNavigationReady } = useAuthRedirection((user, redirect) => {
+    if (user && user.verified) {
+      redirect("/");
+    } else if (user && !user.verified) {
+      redirect("/verify");
+    }
+  });
 
   const theme = useTheme();
 
-  if (!isReady || isAuthenticated) {
+  if (!isNavigationReady) {
     return (
       <View
         flex={1}

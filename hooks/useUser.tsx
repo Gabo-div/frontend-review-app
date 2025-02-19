@@ -18,6 +18,5 @@ export default function useUser(userId?: number) {
 
       return null;
     },
-    enabled: !!userId || !!session?.user_id,
   });
 }

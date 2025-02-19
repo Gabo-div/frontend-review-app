@@ -6,15 +6,15 @@ import { Spinner, View, useTheme } from "tamagui";
 export default function StacksLayout() {
   const theme = useTheme();
 
-  const { isReady, isAuthenticated } = useAuthRedirection(
-    (isAuthenticated, redirect) => {
-      if (!isAuthenticated) {
-        redirect("/login");
-      }
-    },
-  );
+  const { isNavigationReady, user } = useAuthRedirection((user, redirect) => {
+    if (!user) {
+      redirect("/login");
+    } else if (!user.verified) {
+      redirect("/verify");
+    }
+  });
 
-  if (!isReady || !isAuthenticated) {
+  if (!isNavigationReady || !user) {
     return (
       <View
         flex={1}

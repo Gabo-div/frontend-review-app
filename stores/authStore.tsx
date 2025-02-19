@@ -4,6 +4,7 @@ import { persist, createJSONStorage, StateStorage } from "zustand/middleware";
 import * as SecureStore from "expo-secure-store";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import { createUser } from "@/services/auth";
 
 interface AuthStore {
   token: string | null;
@@ -17,12 +18,19 @@ interface AuthStore {
     username: string;
     password: string;
   }) => Promise<boolean>;
+  signup: (signupData: {
+    avatarUrl: string;
+    displayName: string;
+    username: string;
+    email: string;
+    password: string;
+  }) => Promise<boolean>;
   logout: () => void;
 }
 
 export const useAuthStore = create(
   persist<AuthStore>(
-    (set) => ({
+    (set, get) => ({
       token: null,
       authenticated: false,
       session: null,
@@ -79,6 +87,22 @@ export const useAuthStore = create(
         }));
 
         return success;
+      },
+      signup: async (data) => {
+        set({
+          isLoading: false,
+        });
+
+        const success = await createUser(data);
+
+        if (!success) {
+          return false;
+        }
+
+        return await get().login({
+          username: data.username,
+          password: data.password,
+        });
       },
       logout: () => {
         set({

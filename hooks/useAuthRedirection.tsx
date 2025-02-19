@@ -1,15 +1,15 @@
-import { useAuthStore } from "@/stores/authStore";
 import { useNavigation, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
+import useUser from "@/hooks/useUser";
+import { User } from "@/models/User";
+import { useRouteInfo } from "expo-router/build/hooks";
 
-type Callback = (
-  isAuthenticated: boolean,
-  redirect: (path: string) => void,
-) => void;
+type Callback = (data: User | null, redirect: (path: string) => void) => void;
 
 export default function useAuthRedirection(callback: Callback) {
   const router = useRouter();
   const navigation = useNavigation();
+  const route = useRouteInfo();
 
   const [isNavigationReady, setNavigationReady] = useState(false);
 
@@ -25,18 +25,38 @@ export default function useAuthRedirection(callback: Callback) {
     };
   }, [navigation]);
 
-  const isAuthenticated = useAuthStore((s) => s.authenticated);
+  const { data: user, status } = useUser();
 
   useEffect(() => {
     if (!isNavigationReady) {
       return;
     }
 
-    callback(isAuthenticated, (path: string) => router.replace(path));
-  }, [isAuthenticated, router, isNavigationReady, callback]);
+    if (status === "pending") {
+      return;
+    }
+
+    if (status === "error") {
+      callback(null, (path: string) => {
+        if (route.pathname === path) {
+          return;
+        }
+        router.replace(path);
+      });
+    }
+
+    if (status === "success") {
+      callback(user, (path: string) => {
+        if (route.pathname === path) {
+          return;
+        }
+        router.replace(path);
+      });
+    }
+  }, [user, status, router, isNavigationReady, callback, route]);
 
   return {
-    isReady: isNavigationReady,
-    isAuthenticated,
+    isNavigationReady,
+    user,
   };
 }
