@@ -1,13 +1,16 @@
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { useRef, useState, useEffect } from "react";
 import { Image as ImageIcon, Zap, ZapOff, Repeat } from "@tamagui/lucide-icons";
-import { Button, YStack, Text, Slider } from "tamagui";
+import { Button, YStack, Text, Slider, Sheet } from "tamagui";
 import * as ImagePicker from "expo-image-picker";
 import { Alert } from "react-native";
 import DisplaySelectedImage from "./displaySelectedImage";
-import { getImageURI, SendImage } from "@/services/imagenServices";
+import { getImageURI, sendImage } from "@/services/imagenServices";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import axios from "axios";
+import { PlaceDetails } from "@/models/Place";
+import { DisplayPlaces } from "./DisplayPlaces";
 
 export function ScreenCamera() {
   const insets = useSafeAreaInsets();
@@ -19,6 +22,8 @@ export function ScreenCamera() {
   const camera = useRef<CameraView>(null);
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [zoom, setZoom] = useState(0);
+  const [places, setPlaces] = useState<Omit<PlaceDetails, "category">[]>([])
+
 
   useEffect(() => {
     (async () => {
@@ -59,7 +64,7 @@ export function ScreenCamera() {
   const takePicture = async () => {
     if (camera) {
       const photo = await camera.current?.takePictureAsync();
-      console.log(photo);
+      console.log({photo});
       if (!photo) return;
       setSelectedImage(photo.uri);
     }
@@ -72,9 +77,10 @@ export function ScreenCamera() {
   const onSend = async () => {
     try {
       const imagenBlob = await getImageURI(selectedImage);
-      console.log("imagenBlob: ");
       console.log(imagenBlob);
-      await SendImage(imagenBlob, selectedImage);
+      const places = await sendImage(selectedImage, { latitude: -62.7442323, longitude: 8.2918355 });
+      setPlaces(places)
+      console.log({places})
       setSelectedImage("");
     } catch (error) {
       console.log(error);
@@ -268,6 +274,42 @@ export function ScreenCamera() {
           onSend={onSend}
           onCancel={() => setSelectedImage("")}
         />
+      )}
+
+      {places.length > 0 && (
+        <YStack
+          position="absolute"
+          top={0}
+          width="100%"
+          height="100%"
+          backgroundColor="rgba(200, 200, 200, 1)"
+          alignItems="center"
+          // padding="$4"
+        >
+          <Sheet
+            forceRemoveScrollEnabled={true}
+            open={true}
+            onOpenChange={() => setPlaces([])}
+            dismissOnSnapToBottom
+            zIndex={100_000}
+            animation="quick"
+            snapPoints={[95]}
+            modal
+          >
+            <Sheet.Overlay />
+            <Sheet.Handle backgroundColor="$color12" opacity={1} />
+            <Sheet.Frame
+              backgroundColor="$color2"
+              borderTopLeftRadius="$radius.9"
+              borderTopRightRadius="$radius.9"
+            >
+              <DisplayPlaces
+                places={places}
+                onPressItem={() => setPlaces([])}
+              />
+            </Sheet.Frame>
+          </Sheet>
+        </YStack>
       )}
     </YStack>
   );
