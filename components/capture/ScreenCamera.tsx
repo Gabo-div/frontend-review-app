@@ -9,6 +9,7 @@ import { sendImage } from "@/services/inference";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PlaceDetails } from "@/models/Place";
 import { DisplayPlaces } from "./DisplayPlaces";
+import * as Location from "expo-location";
 
 export function ScreenCamera() {
   const insets = useSafeAreaInsets();
@@ -82,9 +83,17 @@ export function ScreenCamera() {
     setPlaces(null);
 
     try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status !== "granted") {
+        return;
+      }
+
+      const lct = await Location.getCurrentPositionAsync({});
+
       const places = await sendImage(image, {
-        latitude: -62.7442323,
-        longitude: 8.2918355,
+        latitude: lct.coords.latitude,
+        longitude: lct.coords.longitude,
       });
 
       setPlaces(places);

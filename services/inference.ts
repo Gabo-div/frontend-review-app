@@ -16,7 +16,7 @@ export const sendImage = async (
     }
 
     const response = await FileSystem.uploadAsync(
-      `${process.env.API_URL}/inferences?lon=${longitude}&lat=${latitude}`,
+      `${process.env.API_URL}/inferences?lon=${latitude}&lat=${longitude}`,
       uri,
       {
         httpMethod: "POST",
