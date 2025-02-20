@@ -1,6 +1,5 @@
 import { PlaceDetails } from "@/models/Place";
 import { Link } from "expo-router";
-import { StyleSheet } from "react-native";
 import { ArrowUpLeft, MapPin } from "@tamagui/lucide-icons";
 import { ScrollView, View, Text, Separator } from "tamagui";
 
@@ -10,14 +9,11 @@ interface Props {
 }
 
 export const DisplayPlaces = ({ places, onPressItem }: Props) => {
-  console.log("rendering");
   return (
     <ScrollView paddingHorizontal="$4">
-      {/* {isLoading ? (
-            <View paddingVertical="$4">
-                <Spinner size="large" color="$color" />
-            </View>
-            ) : null} */}
+      <Text fontSize="$4" fontWeight="bold" textAlign="center" paddingTop="$5">
+        Resultados para la Imagen
+      </Text>
       {places.length === 0 && (
         <View paddingVertical="$4">
           <Text color="$color11" textAlign="center">
@@ -73,12 +69,3 @@ export const DisplayPlaces = ({ places, onPressItem }: Props) => {
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    // backgroundColor: "rgba(0, 0, 0, 0.9)",
-    // justifyContent: "center",
-    // alignItems: "center",
-  },
-});

@@ -1,43 +1,42 @@
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { useRef, useState, useEffect } from "react";
 import { Image as ImageIcon, Zap, ZapOff, Repeat } from "@tamagui/lucide-icons";
-import { Button, YStack, Text, Slider, Sheet } from "tamagui";
+import { Button, YStack, Text, Slider, Sheet, Spinner, View } from "tamagui";
 import * as ImagePicker from "expo-image-picker";
 import { Alert } from "react-native";
 import DisplaySelectedImage from "./displaySelectedImage";
-import { getImageURI, sendImage } from "@/services/imagenServices";
-import { View } from "react-native";
+import { sendImage } from "@/services/inference";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import axios from "axios";
 import { PlaceDetails } from "@/models/Place";
 import { DisplayPlaces } from "./DisplayPlaces";
 
 export function ScreenCamera() {
   const insets = useSafeAreaInsets();
 
-  const [hasPermission, setHasPermission] = useState(false);
   const [facing, setFacing] = useState<CameraType>("back");
   const [torch, setTorch] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
   const camera = useRef<CameraView>(null);
-  const [selectedImage, setSelectedImage] = useState<string>("");
+  const [selectedImage, setSelectedImage] = useState("");
   const [zoom, setZoom] = useState(0);
-  const [places, setPlaces] = useState<Omit<PlaceDetails, "category">[]>([]);
+
+  const [places, setPlaces] = useState<Omit<PlaceDetails, "category">[] | null>(
+    null,
+  );
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     (async () => {
       if (!permission) {
-        const { granted } = await requestPermission();
-        setHasPermission(granted);
-      } else {
-        setHasPermission(permission.granted);
+        await requestPermission();
       }
     })();
   }, [permission, requestPermission]);
 
   const pickImage = async () => {
-    // Solicitar permiso para acceder a la galería
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
     if (status !== "granted") {
       Alert.alert(
         "Permiso denegado",
@@ -46,14 +45,10 @@ export function ScreenCamera() {
       return;
     }
 
-    // Abrir la galería para seleccionar una imagen
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      // allowsEditing: true,
+      mediaTypes: ["images"],
       quality: 1,
     });
-
-    console.log(result);
 
     if (!result.canceled) {
       setSelectedImage(result.assets[0].uri);
@@ -61,12 +56,17 @@ export function ScreenCamera() {
   };
 
   const takePicture = async () => {
-    if (camera) {
-      const photo = await camera.current?.takePictureAsync();
-      console.log({ photo });
-      if (!photo) return;
-      setSelectedImage(photo.uri);
+    if (!camera.current) {
+      return;
     }
+
+    const photo = await camera.current.takePictureAsync();
+
+    if (!photo) {
+      return;
+    }
+
+    setSelectedImage(photo.uri);
   };
 
   function toggleCameraFacing() {
@@ -74,34 +74,35 @@ export function ScreenCamera() {
   }
 
   const onSend = async () => {
+    const image = selectedImage;
+
+    setSelectedImage("");
+    setIsLoading(true);
+    setIsError(false);
+    setPlaces(null);
+
     try {
-      const imagenBlob = await getImageURI(selectedImage);
-      console.log(imagenBlob);
-      const places = await sendImage(selectedImage, {
+      const places = await sendImage(image, {
         latitude: -62.7442323,
         longitude: 8.2918355,
       });
+
       setPlaces(places);
-      console.log({ places });
-      setSelectedImage("");
     } catch (error) {
       console.log(error);
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  if (!hasPermission) {
+  if (!permission?.granted) {
     return (
       <View
         style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
       />
     );
   }
-
-  // const handlePinchGesture = (event: { nativeEvent: { scale: any } }) => {
-  //   const scale = event.nativeEvent.scale;
-  //   const newZoom = Math.min(Math.max(zoom + (scale - 1) * 0.1, 0), 1);
-  //   setZoom(newZoom);
-  // };
 
   return (
     <YStack
@@ -110,8 +111,6 @@ export function ScreenCamera() {
       width="100%"
       style={{ marginTop: insets.top }}
     >
-      {/* <GestureHandlerRootView style={{ flex: 1 }}> */}
-      {/* <PinchGestureHandler onGestureEvent={handlePinchGesture}> */}
       <View style={{ flex: 1 }}>
         <CameraView
           ref={camera}
@@ -122,10 +121,8 @@ export function ScreenCamera() {
           flash="auto"
         ></CameraView>
       </View>
-      {/* </PinchGestureHandler> */}
-      {/* </GestureHandlerRootView> */}
 
-      <YStack //FLASH
+      <YStack
         position="absolute"
         top={10}
         right={10}
@@ -153,7 +150,7 @@ export function ScreenCamera() {
         </YStack>
       </YStack>
 
-      <YStack //ZOOM
+      <YStack
         position="absolute"
         bottom={110}
         width="100%"
@@ -270,49 +267,60 @@ export function ScreenCamera() {
         </Button>
       </YStack>
 
-      {selectedImage && (
+      {selectedImage ? (
         <DisplaySelectedImage
           uri={selectedImage}
           onSend={onSend}
           onCancel={() => setSelectedImage("")}
         />
-      )}
+      ) : null}
 
-      {places.length > 0 && (
-        <YStack
-          position="absolute"
-          top={0}
-          width="100%"
-          height="100%"
-          backgroundColor="rgba(200, 200, 200, 1)"
-          alignItems="center"
-          // padding="$4"
+      <Sheet
+        forceRemoveScrollEnabled={true}
+        open={isLoading || isError || !!places}
+        onOpenChange={() => {
+          setPlaces(null);
+          setIsLoading(false);
+          setIsError(false);
+        }}
+        dismissOnSnapToBottom
+        zIndex={100_000}
+        animation="quick"
+        snapPoints={[95]}
+        modal
+      >
+        <Sheet.Overlay />
+        <Sheet.Handle backgroundColor="$color12" opacity={1} />
+        <Sheet.Frame
+          backgroundColor="$color2"
+          borderTopLeftRadius="$radius.9"
+          borderTopRightRadius="$radius.9"
         >
-          <Sheet
-            forceRemoveScrollEnabled={true}
-            open={true}
-            onOpenChange={() => setPlaces([])}
-            dismissOnSnapToBottom
-            zIndex={100_000}
-            animation="quick"
-            snapPoints={[95]}
-            modal
-          >
-            <Sheet.Overlay />
-            <Sheet.Handle backgroundColor="$color12" opacity={1} />
-            <Sheet.Frame
-              backgroundColor="$color2"
-              borderTopLeftRadius="$radius.9"
-              borderTopRightRadius="$radius.9"
+          {isLoading ? (
+            <View flex={1} alignItems="center" justifyContent="center">
+              <Spinner size="large" color="$color" />
+            </View>
+          ) : null}
+
+          {isError ? (
+            <View
+              flex={1}
+              alignItems="center"
+              justifyContent="center"
+              paddingHorizontal="$4"
+              gap="$4"
             >
-              <DisplayPlaces
-                places={places}
-                onPressItem={() => setPlaces([])}
-              />
-            </Sheet.Frame>
-          </Sheet>
-        </YStack>
-      )}
+              <Text textWrap="balance" textAlign="center" color="$red11">
+                Ha ocurrido un error buscando posibles lugares.
+              </Text>
+            </View>
+          ) : null}
+
+          {places ? (
+            <DisplayPlaces places={places} onPressItem={() => setPlaces([])} />
+          ) : null}
+        </Sheet.Frame>
+      </Sheet>
     </YStack>
   );
 }
