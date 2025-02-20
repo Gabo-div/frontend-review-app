@@ -22,8 +22,7 @@ export function ScreenCamera() {
   const camera = useRef<CameraView>(null);
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [zoom, setZoom] = useState(0);
-  const [places, setPlaces] = useState<Omit<PlaceDetails, "category">[]>([])
-
+  const [places, setPlaces] = useState<Omit<PlaceDetails, "category">[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -64,7 +63,7 @@ export function ScreenCamera() {
   const takePicture = async () => {
     if (camera) {
       const photo = await camera.current?.takePictureAsync();
-      console.log({photo});
+      console.log({ photo });
       if (!photo) return;
       setSelectedImage(photo.uri);
     }
@@ -78,9 +77,12 @@ export function ScreenCamera() {
     try {
       const imagenBlob = await getImageURI(selectedImage);
       console.log(imagenBlob);
-      const places = await sendImage(selectedImage, { latitude: -62.7442323, longitude: 8.2918355 });
-      setPlaces(places)
-      console.log({places})
+      const places = await sendImage(selectedImage, {
+        latitude: -62.7442323,
+        longitude: 8.2918355,
+      });
+      setPlaces(places);
+      console.log({ places });
       setSelectedImage("");
     } catch (error) {
       console.log(error);
