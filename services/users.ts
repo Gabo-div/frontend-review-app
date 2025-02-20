@@ -8,11 +8,12 @@ export const getUserById = async (userId: number) => {
 
   return userSchema.parse({
     id: data.id,
+    avatarUrl: data.avatar_url,
     username: data.username,
     displayName: data.display_name,
     email: data.email,
     verified: data.verified,
-    reviewsCount: 0,
+    reviewsCount: data.reviews,
     followersCount: data.followers,
     followingCount: data.following,
     bookmarksCount: data.bookmarks,
