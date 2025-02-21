@@ -26,6 +26,7 @@ const userData: UserType = {
   id: 1,
   verified: true,
   username: "name",
+  avatarUrl: "http://picsum.photos/200/300",
   displayName: "displayName",
   email: "email",
   reviewsCount: 10,
