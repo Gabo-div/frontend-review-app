@@ -22,8 +22,6 @@ export default function Layout() {
     return null;
   }
 
-  const isDark = currentTheme.includes("dark");
-
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
@@ -32,7 +30,7 @@ export default function Layout() {
           config={config}
           defaultTheme={currentTheme}
         >
-          <StatusBar style={!isDark ? "light" : "dark"} />
+          <StatusBar style="light" />
           <Slot />
         </TamaguiProvider>
       </QueryClientProvider>
