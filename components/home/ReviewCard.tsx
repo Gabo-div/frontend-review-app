@@ -1,15 +1,17 @@
 import { Review } from "@/models/Review";
 import {
-  Ellipsis,
   MapPin,
   MessageCircle,
   ThumbsDown,
   ThumbsUp,
   User,
 } from "@tamagui/lucide-icons";
-import { Avatar, Button, Image, Text, View } from "tamagui";
+import { Avatar, Button, Circle, Square, Text, View } from "tamagui";
 import CommentsSheet from "../CommentsSheet";
 import { useState } from "react";
+import useUser from "@/hooks/useUser";
+import RateIndicator from "./RateIndicator";
+import ReviewImagesCarousel from "./ReviewImagesCarousel";
 
 interface Props {
   data: Review;
@@ -18,63 +20,94 @@ interface Props {
 
 export default function ReviewCard({ data, elevation }: Props) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const { data: user } = useUser(data.userId);
 
   return (
     <>
       <View borderRadius="$4" overflow="hidden">
-        {data.image ? (
-          <View width="100%" aspectRatio={16 / 9}>
-            <Image
-              source={{
-                uri: data.image,
-                width: 200,
-                height: 300,
-              }}
-              width="100%"
-              height="100%"
-            />
-          </View>
-        ) : null}
-
+        <ReviewImagesCarousel images={data.images} />
         <View
           padding="$4"
           backgroundColor={elevation ? `$color${elevation}` : "$color2"}
         >
-          <View
-            paddingBottom="$2"
-            flexDirection="row"
-            gap="$2"
-            alignItems="center"
-          >
-            <MapPin size="$1" color="$green11" />
-            <Text color="$color11">{data.place}</Text>
-          </View>
-          <View flexDirection="row" gap="$2" alignItems="center">
-            <Avatar circular size="$3">
-              <Avatar.Image accessibilityLabel="Cam" src={data.avatar} />
-              <Avatar.Fallback
-                backgroundColor="$color4"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <User size="$1" />
-              </Avatar.Fallback>
-            </Avatar>
-            <View>
-              <Text fontSize="$2">{data.name}</Text>
-              <Text color="$gray10" fontSize="$2">
-                {data.username}
-              </Text>
+          <View flexDirection="row" alignItems="center" marginBottom="$2">
+            <View flexDirection="row" gap="$1" alignItems="center" flex={1}>
+              <MapPin size={15} color="$green11" />
+              <View flex={1}>
+                <Text
+                  color="$color11"
+                  fontSize="$2"
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {data.placeId}
+                </Text>
+              </View>
             </View>
-            <Button chromeless marginLeft="auto" padding="0">
-              <Ellipsis size="$1" />
-            </Button>
+
+            <View marginLeft="auto" paddingLeft="$2">
+              <RateIndicator rate={data.rate} />
+            </View>
           </View>
-          <View marginTop="$2">
-            <Text color="$gray12" fontSize="$3">
-              {data.content}
+
+          <View flexDirection="row" gap="$2">
+            {user ? (
+              <>
+                <Avatar circular size="$3">
+                  <Avatar.Image
+                    accessibilityLabel={user.username}
+                    src={user.avatarUrl}
+                  />
+                  <Avatar.Fallback
+                    backgroundColor="$color4"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <User size="$1" />
+                  </Avatar.Fallback>
+                </Avatar>
+                <View>
+                  <Text fontSize="$2">{user.displayName}</Text>
+                  <Text color="$gray10" fontSize="$2">
+                    {user.username}
+                  </Text>
+                </View>
+              </>
+            ) : (
+              <>
+                <Circle size="$3" backgroundColor="$color4" borderRadius="$9" />
+                <View gap="$2">
+                  <Square
+                    height={10}
+                    width="$8"
+                    backgroundColor="$color4"
+                    borderRadius="$radius.2"
+                  />
+                  <Square
+                    height={10}
+                    width="$6"
+                    backgroundColor="$color4"
+                    borderRadius="$radius.2"
+                  />
+                </View>
+              </>
+            )}
+            <Text
+              marginTop="$1"
+              fontSize="$1"
+              color="$color10"
+              marginLeft="auto"
+            >
+              {data.createdAt.toLocaleDateString("es")}
             </Text>
           </View>
+
+          <View marginTop="$2">
+            <Text color="$gray12" fontSize="$3">
+              {data.text}
+            </Text>
+          </View>
+
           <View
             flexDirection="row"
             justifyContent="space-between"

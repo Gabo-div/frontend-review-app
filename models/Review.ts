@@ -2,15 +2,16 @@ import z from "zod";
 
 export const reviewSchema = z.object({
   id: z.number(),
-  image: z.string().optional(),
-  content: z.string(),
-  place: z.string(),
-  avatar: z.string(),
-  name: z.string(),
-  username: z.string(),
+  userId: z.number(),
+  placeId: z.number(),
+  text: z.string(),
+  rate: z.number(),
   likes: z.number(),
   dislikes: z.number(),
   comments: z.number(),
+  images: z.string().array(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
 });
 
 export type Review = z.infer<typeof reviewSchema>;
