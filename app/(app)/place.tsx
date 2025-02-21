@@ -1,39 +1,22 @@
 import PlaceDetails from "@/components/PlaceDetails";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function Place() {
   const router = useRouter();
   const params = useLocalSearchParams<{
-    latitude?: string;
-    longitude?: string;
+    mapsId?: string;
   }>();
 
-  const [latitude, setLatitude] = useState<number | null>(null);
-  const [longitude, setLongitude] = useState<number | null>(null);
-
   useEffect(() => {
-    const parsedLatitude = parseFloat(params?.latitude || "");
-    const parsedLongitude = parseFloat(params?.longitude || "");
-
-    if (!parsedLatitude || !parsedLongitude) {
+    if (!params.mapsId) {
       router.replace("/");
     }
-
-    setLatitude(parsedLatitude);
-    setLongitude(parsedLongitude);
   }, [router, params]);
 
-  if (!latitude || !longitude) {
+  if (!params.mapsId) {
     return null;
   }
 
-  return (
-    <PlaceDetails
-      coordinate={{
-        latitude,
-        longitude,
-      }}
-    />
-  );
+  return <PlaceDetails query={params.mapsId} />;
 }

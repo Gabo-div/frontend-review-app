@@ -10,8 +10,10 @@ import { Avatar, Button, Circle, Square, Text, View } from "tamagui";
 import CommentsSheet from "../CommentsSheet";
 import { useState } from "react";
 import useUser from "@/hooks/useUser";
+import usePlace from "@/hooks/usePlace";
 import RateIndicator from "./RateIndicator";
 import ReviewImagesCarousel from "./ReviewImagesCarousel";
+import { Link } from "expo-router";
 
 interface Props {
   data: Review;
@@ -21,6 +23,7 @@ interface Props {
 export default function ReviewCard({ data, elevation }: Props) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const { data: user } = useUser(data.userId);
+  const { data: place } = usePlace(data.placeId);
 
   return (
     <>
@@ -34,14 +37,31 @@ export default function ReviewCard({ data, elevation }: Props) {
             <View flexDirection="row" gap="$1" alignItems="center" flex={1}>
               <MapPin size={15} color="$green11" />
               <View flex={1}>
-                <Text
-                  color="$color11"
-                  fontSize="$2"
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {data.placeId}
-                </Text>
+                {place ? (
+                  <Link
+                    asChild
+                    href={{
+                      pathname: "/place",
+                      params: { mapsId: place.details.maps_id },
+                    }}
+                  >
+                    <Text
+                      color="$color11"
+                      fontSize="$2"
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                    >
+                      {place.details.address}
+                    </Text>
+                  </Link>
+                ) : (
+                  <Square
+                    height={10}
+                    width="$6"
+                    backgroundColor="$color4"
+                    borderRadius="$radius.2"
+                  />
+                )}
               </View>
             </View>
 

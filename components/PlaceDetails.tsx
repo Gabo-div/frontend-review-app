@@ -4,7 +4,6 @@ import {
   MessageSquarePlus,
   Star,
 } from "@tamagui/lucide-icons";
-import { useQuery } from "@tanstack/react-query";
 import {
   Button,
   Image,
@@ -17,12 +16,12 @@ import {
 import ReviewCard from "./home/ReviewCard";
 
 import PlaceDetailsContacts from "./PlaceDetailsContacts";
-import { getPlaceByCoordinate } from "@/services/places";
 import { Review } from "@/models/Review";
 import { Coordinate } from "@/models/Coordinate";
+import usePlace from "@/hooks/usePlace";
 
 interface Props {
-  coordinate: Coordinate;
+  query: string | number | Coordinate;
 }
 
 const reviews: Review[] = [
@@ -58,13 +57,10 @@ const reviews: Review[] = [
   },
 ];
 
-export default function PlaceDetails({ coordinate }: Props) {
+export default function PlaceDetails({ query }: Props) {
   const theme = useTheme();
 
-  const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["place", coordinate],
-    queryFn: () => getPlaceByCoordinate(coordinate),
-  });
+  const { data, isLoading, error, refetch } = usePlace(query);
 
   return (
     <View width="100%" height="100%">

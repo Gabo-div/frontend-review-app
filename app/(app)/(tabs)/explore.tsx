@@ -193,9 +193,7 @@ export default function Explore() {
           borderTopLeftRadius="$radius.9"
           borderTopRightRadius="$radius.9"
         >
-          {selectedPOI ? (
-            <PlaceDetails coordinate={selectedPOI.coordinate} />
-          ) : null}
+          {selectedPOI ? <PlaceDetails query={selectedPOI.coordinate} /> : null}
         </Sheet.Frame>
       </Sheet>
     </View>

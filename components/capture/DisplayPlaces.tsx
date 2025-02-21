@@ -27,8 +27,7 @@ export const DisplayPlaces = ({ places, onPressItem }: Props) => {
           href={{
             pathname: "/place",
             params: {
-              latitude: place.latitude,
-              longitude: place.longitude,
+              mapsId: place.maps_id,
             },
           }}
           style={{ width: "100%" }}

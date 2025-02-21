@@ -64,8 +64,7 @@ export default function Search() {
                 href={{
                   pathname: "/place",
                   params: {
-                    latitude: place.latitude,
-                    longitude: place.longitude,
+                    mapsId: place.maps_id,
                   },
                 }}
                 style={{ width: "100%" }}

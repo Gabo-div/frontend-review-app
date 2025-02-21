@@ -25,6 +25,24 @@ export const getPlaceByCoordinate = async (
   return parsed[0];
 };
 
+export const getPlaceByMapsId = async (mapsId: string): Promise<Place> => {
+  const url = `/places/details?mapsId=${mapsId}`;
+  const res = await api.get(url);
+
+  const parsed = placeSchema.array().parse(res.data.data);
+
+  return parsed[0];
+};
+
+export const getPlaceById = async (placeId: number): Promise<Place> => {
+  const url = `/places/details/${placeId}`;
+  const res = await api.get(url);
+
+  const parsed = placeSchema.array().parse(res.data.data);
+
+  return parsed[0];
+};
+
 export const getPlacesByQuery = async (
   query: string,
 ): Promise<
