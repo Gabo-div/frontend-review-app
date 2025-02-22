@@ -1,6 +1,11 @@
-import { View, ScrollView } from "tamagui";
+import { View, ScrollView, Input } from "tamagui";
 import ReviewCard from "@/components/home/ReviewCard";
 import { Review } from "@/models/Review";
+import { Button } from "tamagui";
+import { Pencil } from "@tamagui/lucide-icons";
+import useUser from "@/hooks/useUser";
+import Avatar from "@/components/Avatar";
+import { Link } from "expo-router";
 
 const reviews: Review[] = [
   {
@@ -36,13 +41,48 @@ const reviews: Review[] = [
 ];
 
 export default function Main() {
+  const { data: user } = useUser();
+
   return (
-    <ScrollView>
-      <View padding="$4" gap="$4">
-        {reviews.map((r, i) => (
-          <ReviewCard key={i} data={r} />
-        ))}
-      </View>
-    </ScrollView>
+    <View>
+      <ScrollView>
+        <View padding="$4" gap="$4">
+          <View
+            flexDirection="row"
+            gap="$4"
+            alignItems="center"
+            paddingVertical="$2"
+          >
+            <Avatar src={user?.avatarUrl} />
+
+            <Link href="/post" style={{ flex: 1, display: "flex" }}>
+              <View width="100%" pointerEvents="none">
+                <Input
+                  width="100%"
+                  placeholder="¿En qué estás pensando?"
+                  borderRadius="$9"
+                />
+              </View>
+            </Link>
+          </View>
+
+          {reviews.map((r, i) => (
+            <ReviewCard key={i} data={r} />
+          ))}
+        </View>
+      </ScrollView>
+
+      <Link href="/post" asChild>
+        <Button
+          theme="green"
+          circular
+          position="absolute"
+          bottom="$2"
+          right="$2"
+          size="$6"
+          icon={Pencil}
+        />
+      </Link>
+    </View>
   );
 }

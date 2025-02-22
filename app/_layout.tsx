@@ -7,6 +7,8 @@ import { useFonts } from "expo-font";
 import { useThemeStore } from "@/stores/themeStore";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
+import Toaster from "@/components/Toaster";
+import { ToastProvider, ToastViewport } from "@tamagui/toast";
 
 export default function Layout() {
   const [loaded] = useFonts({
@@ -30,8 +32,17 @@ export default function Layout() {
           config={config}
           defaultTheme={currentTheme}
         >
-          <StatusBar style="light" />
-          <Slot />
+          <ToastProvider>
+            <StatusBar style="light" />
+            <Slot />
+            <Toaster />
+            <ToastViewport
+              flexDirection="column"
+              bottom="$8"
+              left={0}
+              right={0}
+            />
+          </ToastProvider>
         </TamaguiProvider>
       </QueryClientProvider>
     </SafeAreaProvider>

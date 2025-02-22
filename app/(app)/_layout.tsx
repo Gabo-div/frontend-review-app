@@ -72,6 +72,12 @@ export default function StacksLayout() {
           title: "Lugar",
         }}
       />
+      <Stack.Screen
+        name="post"
+        options={{
+          title: "Publicar",
+        }}
+      />
     </Stack>
   );
 }

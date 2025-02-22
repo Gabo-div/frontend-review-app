@@ -6,9 +6,13 @@ export const getUserById = async (userId: number) => {
 
   const { data } = res.data;
 
+  const avatarUrl = data.avatar_url.startsWith("http")
+    ? data.avatar_url
+    : process.env.API_URL + "/" + data.avatar_url;
+
   return userSchema.parse({
     id: data.id,
-    avatarUrl: data.avatar_url,
+    avatarUrl,
     username: data.username,
     displayName: data.display_name,
     email: data.email,
