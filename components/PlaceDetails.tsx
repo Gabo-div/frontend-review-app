@@ -13,49 +13,15 @@ import {
   View,
   useTheme,
 } from "tamagui";
-import ReviewCard from "./home/ReviewCard";
 
 import PlaceDetailsContacts from "./PlaceDetailsContacts";
-import { Review } from "@/models/Review";
 import { Coordinate } from "@/models/Coordinate";
 import usePlace from "@/hooks/usePlace";
+import PlaceReviews from "./PlaceReviews";
 
 interface Props {
   query: string | number | Coordinate;
 }
-
-const reviews: Review[] = [
-  {
-    id: 1,
-    placeId: 1,
-    userId: 1,
-    rate: 3.5,
-    images: [
-      "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?q=80&w=1548&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    ],
-    text: "El servicio es otro nivel. Los meseros son súper amables y atentos. Te hacen sentir como en casa desde el momento en que entras por la puerta.",
-    likes: 20,
-    dislikes: 10,
-    comments: 15,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: 2,
-    placeId: 1,
-    userId: 3,
-    rate: 5,
-    images: [],
-    text: "El parque es un verdadero refugio para los amantes de la naturaleza. Con senderos bien cuidados que serpentean a través de densos bosques y prados abiertos, es el lugar ideal para una caminata relajante.",
-    likes: 20,
-    dislikes: 10,
-    comments: 15,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-];
 
 export default function PlaceDetails({ query }: Props) {
   const theme = useTheme();
@@ -137,62 +103,56 @@ export default function PlaceDetails({ query }: Props) {
             </View>
           </View>
 
-          <View flex={1}>
-            <ScrollView>
-              <View gap="$4" paddingTop="$4">
-                <PlaceDetailsContacts
-                  address={data.details.address}
-                  contacts={data.details.contacts}
-                />
+          <ScrollView>
+            <View gap="$4" paddingVertical="$4" paddingBottom="$13">
+              <PlaceDetailsContacts
+                address={data.details.address}
+                contacts={data.details.contacts}
+              />
 
-                <View>
-                  <ScrollView horizontal>
-                    <View flexDirection="row" gap="$4" paddingHorizontal="$4">
-                      <View
-                        borderRadius="$radius.4"
-                        overflow="hidden"
-                        height="$20"
-                        aspectRatio="1/1"
-                      >
-                        <Image
-                          source={{
-                            uri: "https://picsum.photos/600/600",
-                            width: 200,
-                            height: 300,
-                          }}
-                          width="100%"
-                          height="100%"
-                        />
-                      </View>
-                      <View
-                        borderRadius="$radius.4"
-                        overflow="hidden"
-                        height="$20"
-                        aspectRatio="1/1"
-                      >
-                        <Image
-                          source={{
-                            uri: "https://picsum.photos/600/800",
-                            width: 200,
-                            height: 300,
-                          }}
-                          width="100%"
-                          height="100%"
-                        />
-                      </View>
+              <View>
+                <ScrollView horizontal>
+                  <View flexDirection="row" gap="$4" paddingHorizontal="$4">
+                    <View
+                      borderRadius="$radius.4"
+                      overflow="hidden"
+                      height="$20"
+                      aspectRatio="1/1"
+                    >
+                      <Image
+                        source={{
+                          uri: "https://picsum.photos/600/600",
+                          width: 200,
+                          height: 300,
+                        }}
+                        width="100%"
+                        height="100%"
+                      />
                     </View>
-                  </ScrollView>
-                </View>
-
-                <Text paddingHorizontal="$4">Reseñas</Text>
-                <View gap="$4" paddingHorizontal="$4">
-                  {reviews.map((data, i) => (
-                    <ReviewCard data={data} key={i} elevation={4} />
-                  ))}
-                </View>
+                    <View
+                      borderRadius="$radius.4"
+                      overflow="hidden"
+                      height="$20"
+                      aspectRatio="1/1"
+                    >
+                      <Image
+                        source={{
+                          uri: "https://picsum.photos/600/800",
+                          width: 200,
+                          height: 300,
+                        }}
+                        width="100%"
+                        height="100%"
+                      />
+                    </View>
+                  </View>
+                </ScrollView>
               </View>
-            </ScrollView>
-          </View>
+
+              <Text paddingHorizontal="$4">Reseñas</Text>
+              <PlaceReviews placeId={data.id} />
+            </View>
+          </ScrollView>
         </View>
       ) : null}
     </View>

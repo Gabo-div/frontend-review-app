@@ -1,6 +1,8 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Animated, FlatList } from "react-native";
 import { Image, View, Circle } from "tamagui";
+import { api } from "@/lib/api";
+import { Buffer } from "buffer";
 
 interface Props {
   images: string[];
@@ -9,6 +11,24 @@ interface Props {
 export default function ReviewImagesCarousel({ images }: Props) {
   const [index, setIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
+  const [parsedImages, setParsedImages] = useState<string[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const imgs = await Promise.all(
+        images.map((src) => api.get(src, { responseType: "arraybuffer" })),
+      );
+
+      const srcs = imgs.map(
+        (res) =>
+          `data:image/png;base64,${Buffer.from(res.data, "binary").toString(
+            "base64",
+          )}`,
+      );
+
+      setParsedImages(srcs);
+    })();
+  }, [images]);
 
   if (!images.length) {
     return null;
@@ -22,7 +42,7 @@ export default function ReviewImagesCarousel({ images }: Props) {
       position="relative"
     >
       <FlatList
-        data={images}
+        data={parsedImages}
         renderItem={({ item }) => (
           <View height="100%" aspectRatio={1 / 1}>
             <Image source={{ uri: item }} flex={1} />
@@ -68,7 +88,7 @@ export default function ReviewImagesCarousel({ images }: Props) {
         transform="translate(-50%, 0)"
         gap="$2"
       >
-        {images.map((_image, i) => (
+        {parsedImages.map((_image, i) => (
           <Circle
             key={i}
             size="$0.75"

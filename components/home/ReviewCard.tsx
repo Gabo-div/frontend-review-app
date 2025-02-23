@@ -4,9 +4,8 @@ import {
   MessageCircle,
   ThumbsDown,
   ThumbsUp,
-  User,
 } from "@tamagui/lucide-icons";
-import { Avatar, Button, Circle, Square, Text, View } from "tamagui";
+import { Button, Circle, Square, Text, View } from "tamagui";
 import CommentsSheet from "../CommentsSheet";
 import { useState } from "react";
 import useUser from "@/hooks/useUser";
@@ -14,6 +13,7 @@ import usePlace from "@/hooks/usePlace";
 import RateIndicator from "./RateIndicator";
 import ReviewImagesCarousel from "./ReviewImagesCarousel";
 import { Link } from "expo-router";
+import Avatar from "@/components/Avatar";
 
 interface Props {
   data: Review;
@@ -73,19 +73,7 @@ export default function ReviewCard({ data, elevation }: Props) {
           <View flexDirection="row" gap="$2">
             {user ? (
               <>
-                <Avatar circular size="$3">
-                  <Avatar.Image
-                    accessibilityLabel={user.username}
-                    src={user.avatarUrl}
-                  />
-                  <Avatar.Fallback
-                    backgroundColor="$color4"
-                    alignItems="center"
-                    justifyContent="center"
-                  >
-                    <User size="$1" />
-                  </Avatar.Fallback>
-                </Avatar>
+                <Avatar size="$3" src={user?.avatarUrl} />
                 <View>
                   <Text fontSize="$2">{user.displayName}</Text>
                   <Text color="$gray10" fontSize="$2">
