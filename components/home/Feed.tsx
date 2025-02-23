@@ -57,7 +57,7 @@ export default function Feed({ header }: Props) {
         <FlatList
           data={dataArray}
           keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={{ gap: 28, padding: 28 }}
+          contentContainerStyle={{ gap: 28, padding: 16 }}
           ListHeaderComponent={header}
           renderItem={({ item }) => <ReviewCard data={item} />}
           onEndReached={() => {
