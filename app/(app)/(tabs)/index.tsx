@@ -1,11 +1,8 @@
-import { View, ScrollView, Input } from "tamagui";
+import { View,ScrollView,Button,Spinner } from "tamagui";
 import ReviewCard from "@/components/home/ReviewCard";
 import { Review } from "@/models/Review";
-import { Button } from "tamagui";
-import { Pencil } from "@tamagui/lucide-icons";
-import useUser from "@/hooks/useUser";
-import Avatar from "@/components/Avatar";
-import { Link } from "expo-router";
+import { getFeedByUserId } from "@/services/feed"
+import { useInfiniteQuery } from "@tanstack/react-query"
 
 const reviews: Review[] = [
   {
@@ -41,48 +38,45 @@ const reviews: Review[] = [
 ];
 
 export default function Main() {
-  const { data: user } = useUser();
-
+  const {
+    data,
+    error,
+    fetchNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
+    hasNextPage,
+  } = useInfiniteQuery({
+    queryKey:['projects'],
+    queryFn: ({pageParam})=>getFeedByUserId(3,pageParam),
+    initialPageParam: undefined,
+    getNextPageParam: (lastPage, pages) => lastPage.next,
+  })
+  if (error) {
+    console.error("useInfiniteQuery Error:", error);
+  }
   return (
-    <View>
-      <ScrollView>
-        <View padding="$4" gap="$4">
-          <View
-            flexDirection="row"
-            gap="$4"
-            alignItems="center"
-            paddingVertical="$2"
-          >
-            <Avatar src={user?.avatarUrl} />
-
-            <Link href="/post" style={{ flex: 1, display: "flex" }}>
-              <View width="100%" pointerEvents="none">
-                <Input
-                  width="100%"
-                  placeholder="¿En qué estás pensando?"
-                  borderRadius="$9"
-                />
-              </View>
-            </Link>
-          </View>
-
-          {reviews.map((r, i) => (
-            <ReviewCard key={i} data={r} />
-          ))}
-        </View>
-      </ScrollView>
-
-      <Link href="/post" asChild>
-        <Button
-          theme="green"
-          circular
-          position="absolute"
-          bottom="$2"
-          right="$2"
-          size="$6"
-          icon={Pencil}
-        />
-      </Link>
-    </View>
+    <ScrollView>
+      <View gap="$4" paddingHorizontal="$4">
+        {data ? (
+          <>
+            {data.pages.map((page) =>
+              page.data.map((review) => (
+                <ReviewCard data={review} key={review.id} elevation={4}/>
+              )),
+            )}
+            {hasNextPage ? (
+              <Button
+                disabled={isFetchingNextPage}
+                iconAfter={isFetchingNextPage ? <Spinner />:null}
+                onPress={() => fetchNextPage()}
+              >
+                ver más
+              </Button>
+            ):null}
+          </>
+        ):null}  
+      </View>
+    </ScrollView>
   );
-}
+};
