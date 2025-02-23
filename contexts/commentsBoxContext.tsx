@@ -1,12 +1,13 @@
+import { postComment } from "@/services/comments";
+import { useToastController } from "@tamagui/toast";
 import { createContext, useState } from "react";
-import { Comment } from "@/models/Comment";
-import { useAuthStore } from "@/stores/authStore";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface CommentsBoxContextType {
-  replyingTo: number | null;
-  setReplyingTo: (id: number | null) => void;
-  comments: Comment[];
-  addComment: (content: string) => void;
+  replyingTo: { commentId: number; username: string } | null;
+  setReplyingTo: (id: { commentId: number; username: string } | null) => void;
+  addComment: (content: string) => Promise<void>;
+  reviewId: number;
 }
 
 export const CommentsBoxContext = createContext<CommentsBoxContextType | null>(
@@ -19,40 +20,38 @@ interface Props {
 }
 
 export const CommentsBoxProvider = ({ reviewId, children }: Props) => {
-  const session = useAuthStore((state) => state.session!);
+  const queryClient = useQueryClient();
+  const toast = useToastController();
 
-  const [replyingTo, setReplyingTo] = useState<number | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
-  // TODO: Get comments from API
+  const [replyingTo, setReplyingTo] = useState<{
+    commentId: number;
+    username: string;
+  } | null>(null);
 
-  const addComment = (content: string) => {
+  const addComment = async (content: string) => {
+    if (!content) {
+      return;
+    }
+
     if (replyingTo) {
-      // TODO: Add reply to comment
-      setComments([
-        ...comments,
-        {
-          id: comments.length + 1,
-          reviewId,
-          userId: session.user_id,
-          content,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ]);
-
       setReplyingTo(null);
     } else {
-      setComments([
-        ...comments,
-        {
-          id: comments.length + 1,
-          reviewId,
-          userId: session.user_id,
-          content,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ]);
+      const { success } = await postComment({ text: content, reviewId });
+
+      if (success) {
+        toast.show("Comentario publicado", {
+          message: "Tu comentario ha sido publicado correctamente",
+        });
+
+        queryClient.invalidateQueries({
+          queryKey: ["comments", { reviewId }],
+        });
+      } else {
+        toast.show("Ha ocurrido un error", {
+          message: "No hemos podido publicar tu comentario",
+          type: "error",
+        });
+      }
     }
   };
 
@@ -61,8 +60,8 @@ export const CommentsBoxProvider = ({ reviewId, children }: Props) => {
       value={{
         replyingTo,
         setReplyingTo,
-        comments,
         addComment,
+        reviewId,
       }}
     >
       {children}

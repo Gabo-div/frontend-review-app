@@ -1,36 +1,52 @@
 import { useState } from "react";
 import useCommentsBox from "@/hooks/useCommentsBox";
-import {
-  Button,
-  XStack,
-  TextArea,
-  Image,
-  ScrollView,
-  View,
-  Text,
-} from "tamagui";
+import { Button, XStack, TextArea, View, Text } from "tamagui";
 import Comment from "./Comment";
 import { Send, X } from "@tamagui/lucide-icons";
+import useUser from "@/hooks/useUser";
+import Avatar from "./Avatar";
+import useReviewComments from "@/hooks/useReviewComments";
+import { FlatList } from "react-native";
 
 export default function CommentsBox() {
-  const { comments, addComment, replyingTo, setReplyingTo } = useCommentsBox();
+  const [sending, setSending] = useState(false);
+
+  const { addComment, replyingTo, setReplyingTo, reviewId } = useCommentsBox();
+
+  const { data: user } = useUser();
+  const {
+    data: comments,
+    hasNextPage,
+    isLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useReviewComments(reviewId);
+
   const [newComment, setNewComment] = useState("");
 
-  const handleAddComment = () => {
-    if (!newComment) {
-      return;
-    }
-    addComment(newComment);
+  const handleAddComment = async () => {
+    setSending(true);
+
+    await addComment(newComment);
+
+    setSending(false);
     setNewComment("");
   };
 
+  const commentsArray = comments?.pages.map((page) => page.data).flat();
+
   return (
     <>
-      <ScrollView>
-        {comments.map((comment, index) => (
-          <Comment key={index} comment={comment} />
-        ))}
-      </ScrollView>
+      <FlatList
+        data={commentsArray}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => <Comment comment={item} />}
+        contentContainerStyle={{ gap: 28, paddingVertical: 28 }}
+        onEndReached={() => {
+          if (!hasNextPage || isLoading || isFetchingNextPage) return;
+          fetchNextPage();
+        }}
+      />
       {replyingTo ? (
         <View
           padding="$4"
@@ -39,7 +55,7 @@ export default function CommentsBox() {
           flexDirection="row"
           justifyContent="space-between"
         >
-          <Text color="$color11">Respondiendo a comentario {replyingTo}</Text>
+          <Text color="$color11">Respondiendo a {replyingTo.username}</Text>
           <X
             color="$color11"
             onPress={() => {
@@ -57,12 +73,8 @@ export default function CommentsBox() {
         borderTopWidth={1}
         borderTopColor="$color6"
       >
-        <Image
-          width={40}
-          height={40}
-          borderRadius={20}
-          src="https://imageplaceholder.net/600x400"
-        />
+        <Avatar src={user?.avatarUrl} />
+
         <TextArea
           flex={1}
           value={newComment}
@@ -70,7 +82,7 @@ export default function CommentsBox() {
           padding="$2.5"
           placeholder="Agrega un comentario..."
         />
-        <Button onPress={handleAddComment}>
+        <Button onPress={handleAddComment} disabled={sending}>
           <Send size="$1" />
         </Button>
       </XStack>

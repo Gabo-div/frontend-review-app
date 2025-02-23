@@ -1,6 +1,8 @@
 import { Sheet } from "@tamagui/sheet";
 import CommentsBox from "./CommentsBox";
 import { CommentsBoxProvider } from "@/contexts/commentsBoxContext";
+import { ToastProvider, ToastViewport } from "@tamagui/toast";
+import Toaster from "./Toaster";
 
 interface SheetDemoProps {
   reviewId: number;
@@ -32,9 +34,20 @@ export const CommentsSheet = ({
           borderTopLeftRadius="$radius.9"
           borderTopRightRadius="$radius.9"
         >
-          <CommentsBoxProvider reviewId={reviewId}>
-            <CommentsBox />
-          </CommentsBoxProvider>
+          {open ? (
+            <ToastProvider>
+              <CommentsBoxProvider reviewId={reviewId}>
+                <CommentsBox />
+              </CommentsBoxProvider>
+              <Toaster />
+              <ToastViewport
+                flexDirection="column"
+                top="$4"
+                left={0}
+                right={0}
+              />
+            </ToastProvider>
+          ) : null}
         </Sheet.Frame>
       </Sheet>
     </>

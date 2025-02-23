@@ -41,6 +41,7 @@ export default function Layout() {
               bottom="$8"
               left={0}
               right={0}
+              portalToRoot
             />
           </ToastProvider>
         </TamaguiProvider>

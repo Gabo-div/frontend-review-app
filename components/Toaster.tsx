@@ -17,6 +17,7 @@ export default function Toaster() {
       animation="100ms"
       viewportName={currentToast.viewportName}
       theme={currentToast.type === "error" ? "red" : "green"}
+      zIndex={200_000}
     >
       <YStack bottom="0">
         <Toast.Title>{currentToast.title}</Toast.Title>
