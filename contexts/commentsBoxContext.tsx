@@ -1,4 +1,4 @@
-import { postComment } from "@/services/comments";
+import { postComment, postAnswer } from "@/services/comments";
 import { useToastController } from "@tamagui/toast";
 import { createContext, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -34,6 +34,22 @@ export const CommentsBoxProvider = ({ reviewId, children }: Props) => {
     }
 
     if (replyingTo) {
+      const { success } = await postAnswer({
+        commentId: replyingTo.commentId,
+        text: content,
+      });
+
+      if (success) {
+        toast.show("Respuesta publicada", {
+          message: "Tu resuesta ha sido publicada correctamente",
+        });
+      } else {
+        toast.show("Ha ocurrido un error", {
+          message: "No hemos podido publicar tu comentario",
+          type: "error",
+        });
+      }
+
       setReplyingTo(null);
     } else {
       const { success } = await postComment({ text: content, reviewId });

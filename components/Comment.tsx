@@ -5,6 +5,7 @@ import { Comment as CommentType } from "@/models/Comment";
 import useCommentsBox from "@/hooks/useCommentsBox";
 import useUser from "@/hooks/useUser";
 import Avatar from "./Avatar";
+import Replies from "./Replies";
 
 interface CommentProps {
   comment: CommentType;
@@ -12,9 +13,7 @@ interface CommentProps {
 
 const Comment: React.FC<CommentProps> = ({ comment }: CommentProps) => {
   const { data: user } = useUser(comment.userId);
-
   const { setReplyingTo } = useCommentsBox();
-
   const [showReplies, setShowReplies] = useState(false);
 
   return (
@@ -79,7 +78,6 @@ const Comment: React.FC<CommentProps> = ({ comment }: CommentProps) => {
             <Text
               marginTop="$4"
               color="$gray10Light"
-              textAlign="center"
               onPress={() => setShowReplies(!showReplies)}
             >
               {showReplies
@@ -89,13 +87,7 @@ const Comment: React.FC<CommentProps> = ({ comment }: CommentProps) => {
           ) : null}
         </YStack>
       </View>
-      {/* {showReplies && ( */}
-      {/*   <YStack marginLeft="$8"> */}
-      {/*     {replies.map((reply, index) => ( */}
-      {/*       <Reply key={index} {...reply} /> */}
-      {/*     ))} */}
-      {/*   </YStack> */}
-      {/* )} */}
+      {showReplies ? <Replies commentId={comment.id} /> : null}
     </YStack>
   );
 };

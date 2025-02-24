@@ -1,24 +1,17 @@
 import React from "react";
-import { YStack, Paragraph, XStack, Image, Text, View } from "tamagui";
+import { YStack, Paragraph, XStack, Text, View, Square } from "tamagui";
 import { ThumbsUp, ThumbsDown } from "@tamagui/lucide-icons";
+import { Reply as ReplyType } from "@/models/Comment";
+import useUser from "@/hooks/useUser";
+import Avatar from "./Avatar";
 
-interface ReplyProps {
-  user: string;
-  comment: string;
-  userAvatar: string;
-  hours: number;
-  likes: number;
-  dislikes: number;
+interface Props {
+  reply: ReplyType;
 }
 
-const Reply: React.FC<ReplyProps> = ({
-  user,
-  comment,
-  userAvatar,
-  hours,
-  likes,
-  dislikes,
-}) => {
+export default function Reply({ reply }: Props) {
+  const { data: user } = useUser(reply.userId);
+
   return (
     <View
       padding="$4"
@@ -27,39 +20,41 @@ const Reply: React.FC<ReplyProps> = ({
       justifyContent="space-between"
       style={{ width: "100%" }}
     >
-      <Image
-        width={35}
-        height={35}
-        borderRadius="$radius.9"
-        marginRight="$4"
-        source={{ uri: userAvatar }}
-      />
+      <View marginRight="$4">
+        <Avatar src={user?.avatarUrl} size="$3" />
+      </View>
 
       <YStack flex={1}>
         <XStack gap="$2" alignItems="center">
-          <Text>{user}</Text>
-          <Text color="$color10">{hours}h</Text>
+          {user ? (
+            <Text>{user.username}</Text>
+          ) : (
+            <Square
+              height={10}
+              width="$8"
+              backgroundColor="$color4"
+              borderRadius="$radius.2"
+            />
+          )}
+          <Text color="$color10">1h</Text>
         </XStack>
 
         <Paragraph fontSize="$3" lineHeight="$3" marginTop="$2">
-          {comment}
+          {reply.text}
         </Paragraph>
 
         <View flexDirection="row" gap="$4" alignItems="center" marginTop="$2">
           <View alignItems="center" flexDirection="row" gap="$2">
             <ThumbsUp size={15} color="$color11" />
-            <Text color="$color11">{likes.toString()}</Text>
+            <Text color="$color11">{reply.likesCount.toString()}</Text>
           </View>
 
           <View alignItems="center" flexDirection="row" gap="$2">
             <ThumbsDown size={15} color="$color11" />
-            <Text color="$color11">{dislikes.toString()}</Text>
+            <Text color="$color11">{reply.dislikesCount.toString()}</Text>
           </View>
-          <Text color="$color11">Responder</Text>
         </View>
       </YStack>
     </View>
   );
-};
-
-export default Reply;
+}
