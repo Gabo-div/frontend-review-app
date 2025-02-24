@@ -1,7 +1,7 @@
 import useCommentAnswers from "@/hooks/useCommentAnswers";
 import Reply from "./Reply";
-import { FlatList } from "react-native";
 import { View } from "tamagui";
+import { FlashList } from "@shopify/flash-list";
 
 interface Props {
   commentId: number;
@@ -15,13 +15,15 @@ export default function Replies({ commentId }: Props) {
 
   return (
     <View paddingLeft="$9">
-      <FlatList
+      <FlashList
         data={replies}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <Reply reply={item} />}
-        contentContainerStyle={{
-          gap: 28,
-        }}
+        estimatedItemSize={122}
+        renderItem={({ item }) => (
+          <View paddingTop="$4">
+            <Reply reply={item} />
+          </View>
+        )}
         onEndReached={() => {
           if (!hasNextPage || isLoading || isFetchingNextPage) return;
           fetchNextPage();

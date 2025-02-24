@@ -2,7 +2,7 @@ import { getFeed } from "@/services/feed";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import ReviewCard from "./ReviewCard";
 import { Button, Spinner, View, Text } from "tamagui";
-import { FlatList } from "react-native";
+import { FlashList } from "@shopify/flash-list";
 
 interface Props {
   header: () => React.ReactNode;
@@ -54,12 +54,17 @@ export default function Feed({ header }: Props) {
   return (
     <>
       {dataArray?.length ? (
-        <FlatList
+        <FlashList
           data={dataArray}
           keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={{ gap: 28, padding: 16 }}
+          contentContainerStyle={{ padding: 16 }}
+          estimatedItemSize={526}
           ListHeaderComponent={header}
-          renderItem={({ item }) => <ReviewCard data={item} />}
+          renderItem={({ item }) => (
+            <View paddingTop="$4">
+              <ReviewCard data={item} />
+            </View>
+          )}
           onEndReached={() => {
             if (!hasNextPage || isLoading || isFetchingNextPage) return;
             fetchNextPage();

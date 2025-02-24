@@ -1,7 +1,7 @@
+import { useAuthStore } from "@/stores/authStore";
 import { useRef, useState } from "react";
 import { Animated, FlatList } from "react-native";
 import { Image, View, Circle } from "tamagui";
-import useImages from "@/hooks/useImages";
 
 interface Props {
   images: string[];
@@ -11,7 +11,7 @@ export default function ReviewImagesCarousel({ images }: Props) {
   const [index, setIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
 
-  const { sources } = useImages(images);
+  const token = useAuthStore((state) => state.token);
 
   if (!images.length) {
     return null;
@@ -25,10 +25,18 @@ export default function ReviewImagesCarousel({ images }: Props) {
       position="relative"
     >
       <FlatList
-        data={sources}
+        data={images}
         renderItem={({ item }) => (
           <View height="100%" aspectRatio={1 / 1}>
-            <Image source={{ uri: item }} flex={1} />
+            <Image
+              source={{
+                uri: item,
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }}
+              flex={1}
+            />
           </View>
         )}
         horizontal
@@ -71,7 +79,7 @@ export default function ReviewImagesCarousel({ images }: Props) {
         transform="translate(-50%, 0)"
         gap="$2"
       >
-        {sources.map((_image, i) => (
+        {images.map((_image, i) => (
           <Circle
             key={i}
             size="$0.75"

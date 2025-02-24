@@ -1,6 +1,7 @@
 import usePlaceReviews from "@/hooks/usePlaceReviews";
 import { Button, View, Spinner, Text } from "tamagui";
 import ReviewCard from "./home/ReviewCard";
+import { FlashList } from "@shopify/flash-list";
 
 interface Props {
   placeId: number;
@@ -42,26 +43,33 @@ export default function PlaceReviews({ placeId }: Props) {
     );
   }
 
+  const dataArray = data?.pages.map((page) => page.data).flat();
+
   return (
-    <View gap="$4" paddingHorizontal="$4">
-      {data ? (
-        <>
-          {data.pages.map((page) =>
-            page.data.map((review) => (
-              <ReviewCard data={review} key={review.id} elevation={4} />
-            )),
+    <>
+      {dataArray?.length ? (
+        <FlashList
+          data={dataArray}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={{ padding: 16 }}
+          estimatedItemSize={526}
+          renderItem={({ item }) => (
+            <View paddingTop="$4">
+              <ReviewCard data={item} />
+            </View>
           )}
-          {hasNextPage ? (
-            <Button
-              disabled={isFetchingNextPage}
-              iconAfter={isFetchingNextPage ? <Spinner /> : null}
-              onPress={() => fetchNextPage()}
-            >
-              Ver más
-            </Button>
-          ) : null}
-        </>
-      ) : null}
-    </View>
+          onEndReached={() => {
+            if (!hasNextPage || isLoading || isFetchingNextPage) return;
+            fetchNextPage();
+          }}
+        />
+      ) : (
+        <View paddingVertical="$6" alignItems="center">
+          <Text textAlign="center" fontSize="$3" color="$color10" width="$20">
+            No hay reseñas para mostrarte.
+          </Text>
+        </View>
+      )}
+    </>
   );
 }

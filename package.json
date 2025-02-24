@@ -12,6 +12,7 @@
   "dependencies": {
     "@expo/metro-runtime": "~4.0.1",
     "@hookform/resolvers": "^3.9.1",
+    "@shopify/flash-list": "^1.7.3",
     "@tamagui/config": "^1.116.12",
     "@tamagui/core": "^1.116.12",
     "@tamagui/lucide-icons": "^1.116.12",

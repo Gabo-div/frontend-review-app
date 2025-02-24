@@ -6,7 +6,7 @@ import { Send, X } from "@tamagui/lucide-icons";
 import useUser from "@/hooks/useUser";
 import Avatar from "./Avatar";
 import useReviewComments from "@/hooks/useReviewComments";
-import { FlatList } from "react-native";
+import { FlashList } from "@shopify/flash-list";
 
 export default function CommentsBox() {
   const [sending, setSending] = useState(false);
@@ -37,11 +37,16 @@ export default function CommentsBox() {
 
   return (
     <>
-      <FlatList
+      <FlashList
         data={commentsArray}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <Comment comment={item} />}
-        contentContainerStyle={{ gap: 28, paddingVertical: 28 }}
+        renderItem={({ item }) => (
+          <View paddingTop="$4">
+            <Comment comment={item} />
+          </View>
+        )}
+        contentContainerStyle={{ paddingVertical: 28 }}
+        estimatedItemSize={115}
         onEndReached={() => {
           if (!hasNextPage || isLoading || isFetchingNextPage) return;
           fetchNextPage();
