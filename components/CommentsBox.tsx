@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useCommentsBox from "@/hooks/useCommentsBox";
-import { Button, XStack, TextArea, View, Text } from "tamagui";
+import { Button, XStack, TextArea, View, Text, Spinner } from "tamagui";
 import Comment from "./Comment";
 import { Send, X } from "@tamagui/lucide-icons";
 import useUser from "@/hooks/useUser";
@@ -20,6 +20,8 @@ export default function CommentsBox() {
     isLoading,
     isFetchingNextPage,
     fetchNextPage,
+    error,
+    refetch,
   } = useReviewComments(reviewId);
 
   const [newComment, setNewComment] = useState("");
@@ -35,23 +37,57 @@ export default function CommentsBox() {
 
   const commentsArray = comments?.pages.map((page) => page.data).flat();
 
+  if (isLoading) {
+    return (
+      <View flex={1} alignItems="center" justifyContent="center">
+        <Spinner size="large" color="$color" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View
+        flex={1}
+        alignItems="center"
+        justifyContent="center"
+        paddingHorizontal="$4"
+        gap="$4"
+      >
+        <Text textWrap="balance" textAlign="center" color="$red11">
+          Ha ocurrido un error obteniendo la información del lugar.
+        </Text>
+        <Button onPress={() => refetch()}>Reintentar</Button>
+      </View>
+    );
+  }
+
   return (
     <>
-      <FlashList
-        data={commentsArray}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View paddingTop="$4">
-            <Comment comment={item} />
-          </View>
-        )}
-        contentContainerStyle={{ paddingVertical: 28 }}
-        estimatedItemSize={115}
-        onEndReached={() => {
-          if (!hasNextPage || isLoading || isFetchingNextPage) return;
-          fetchNextPage();
-        }}
-      />
+      {commentsArray?.length ? (
+        <FlashList
+          data={commentsArray}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View paddingTop="$4">
+              <Comment comment={item} />
+            </View>
+          )}
+          contentContainerStyle={{ paddingVertical: 28 }}
+          estimatedItemSize={115}
+          onEndReached={() => {
+            if (!hasNextPage || isLoading || isFetchingNextPage) return;
+            fetchNextPage();
+          }}
+        />
+      ) : (
+        <View flex={1} alignItems="center" justifyContent="center">
+          <Text textAlign="center" fontSize="$3" color="$color10" width="$20">
+            Se el primero en comentar
+          </Text>
+        </View>
+      )}
+
       {replyingTo ? (
         <View
           padding="$4"

@@ -1,6 +1,6 @@
 import useCommentAnswers from "@/hooks/useCommentAnswers";
 import Reply from "./Reply";
-import { View } from "tamagui";
+import { Button, Spinner, Text, View } from "tamagui";
 import { FlashList } from "@shopify/flash-list";
 
 interface Props {
@@ -8,10 +8,41 @@ interface Props {
 }
 
 export default function Replies({ commentId }: Props) {
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useCommentAnswers(commentId);
+  const {
+    data,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    error,
+    refetch,
+  } = useCommentAnswers(commentId);
 
   const replies = data?.pages.map((page) => page.data).flat();
+
+  if (isLoading) {
+    return (
+      <View alignItems="center" justifyContent="center" paddingTop="$4">
+        <Spinner color="$color" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View
+        alignItems="center"
+        justifyContent="center"
+        paddingHorizontal="$9"
+        gap="$4"
+      >
+        <Text textWrap="balance" textAlign="center" color="$red11">
+          Ha ocurrido un error obteniendo las respuestas.
+        </Text>
+        <Button onPress={() => refetch()}>Reintentar</Button>
+      </View>
+    );
+  }
 
   return (
     <View paddingLeft="$9">
