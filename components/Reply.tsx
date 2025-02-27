@@ -4,6 +4,7 @@ import { ThumbsUp, ThumbsDown } from "@tamagui/lucide-icons";
 import { Reply as ReplyType } from "@/models/Comment";
 import useUser from "@/hooks/useUser";
 import Avatar from "./Avatar";
+import useUserReaction from "@/hooks/useUserReaction";
 
 interface Props {
   reply: ReplyType;
@@ -11,6 +12,11 @@ interface Props {
 
 export default function Reply({ reply }: Props) {
   const { data: user } = useUser(reply.userId);
+
+  const { data: reaction } = useUserReaction({
+    contentType: "answer",
+    contentId: reply.id,
+  });
 
   return (
     <View
@@ -45,12 +51,19 @@ export default function Reply({ reply }: Props) {
 
         <View flexDirection="row" gap="$4" alignItems="center" marginTop="$2">
           <View alignItems="center" flexDirection="row" gap="$2">
-            <ThumbsUp size={15} color="$color11" />
+            <ThumbsUp
+              size={15}
+              color={reaction?.reaction === "like" ? "$green10" : "$color11"}
+            />
             <Text color="$color11">{reply.likesCount.toString()}</Text>
           </View>
 
           <View alignItems="center" flexDirection="row" gap="$2">
-            <ThumbsDown size={15} color="$color11" />
+            <ThumbsDown
+              size={15}
+              color={reaction?.reaction === "dislike" ? "$red10" : "$color11"}
+            />
+
             <Text color="$color11">{reply.dislikesCount.toString()}</Text>
           </View>
         </View>

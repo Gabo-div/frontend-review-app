@@ -6,6 +6,7 @@ import useCommentsBox from "@/hooks/useCommentsBox";
 import useUser from "@/hooks/useUser";
 import Avatar from "./Avatar";
 import Replies from "./Replies";
+import useUserReaction from "@/hooks/useUserReaction";
 
 interface CommentProps {
   comment: CommentType;
@@ -15,6 +16,11 @@ const Comment: React.FC<CommentProps> = ({ comment }: CommentProps) => {
   const { data: user } = useUser(comment.userId);
   const { setReplyingTo } = useCommentsBox();
   const [showReplies, setShowReplies] = useState(false);
+
+  const { data: reaction } = useUserReaction({
+    contentType: "comment",
+    contentId: comment.id,
+  });
 
   return (
     <YStack>
@@ -51,12 +57,18 @@ const Comment: React.FC<CommentProps> = ({ comment }: CommentProps) => {
 
           <View flexDirection="row" gap="$4" alignItems="center" marginTop="$2">
             <View alignItems="center" flexDirection="row" gap="$2">
-              <ThumbsUp size={15} color="$color11" />
+              <ThumbsUp
+                size={15}
+                color={reaction?.reaction === "like" ? "$green10" : "$color11"}
+              />
               <Text color="$color11">{comment.likesCount}</Text>
             </View>
 
             <View alignItems="center" flexDirection="row" gap="$2">
-              <ThumbsDown size={15} color="$color11" />
+              <ThumbsDown
+                size={15}
+                color={reaction?.reaction === "dislike" ? "$red10" : "$color11"}
+              />
               <Text color="$color11">{comment.dislikesCount}</Text>
             </View>
             <Text

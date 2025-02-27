@@ -14,6 +14,7 @@ import RateIndicator from "./RateIndicator";
 import ReviewImagesCarousel from "./ReviewImagesCarousel";
 import { Link } from "expo-router";
 import Avatar from "@/components/Avatar";
+import useUserReaction from "@/hooks/useUserReaction";
 
 interface Props {
   data: Review;
@@ -24,6 +25,10 @@ export default function ReviewCard({ data, elevation }: Props) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const { data: user } = useUser(data.userId);
   const { data: place } = usePlace(data.placeId);
+  const { data: reaction } = useUserReaction({
+    contentType: "review",
+    contentId: data.id,
+  });
 
   return (
     <>
@@ -121,10 +126,20 @@ export default function ReviewCard({ data, elevation }: Props) {
             justifyContent="space-between"
             marginTop="$2"
           >
-            <Button chromeless icon={<ThumbsUp size="$1" />} padding="0">
+            <Button
+              chromeless
+              icon={<ThumbsUp size="$1" />}
+              padding="0"
+              color={reaction?.reaction === "like" ? "$green10" : undefined}
+            >
               {data.likes.toString()}
             </Button>
-            <Button chromeless icon={<ThumbsDown size="$1" />} padding="0">
+            <Button
+              chromeless
+              icon={<ThumbsDown size="$1" />}
+              padding="0"
+              color={reaction?.reaction === "dislike" ? "$red10" : undefined}
+            >
               {data.dislikes.toString()}
             </Button>
             <Button
