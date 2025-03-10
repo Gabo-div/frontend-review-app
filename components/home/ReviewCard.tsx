@@ -33,7 +33,7 @@ export default function ReviewCard({ data, elevation }: Props) {
   return (
     <>
       <View borderRadius="$4" overflow="hidden">
-        <ReviewImagesCarousel images={data.images} />
+        {data.images ? <ReviewImagesCarousel images={data.images} /> : null}
         <View
           padding="$4"
           backgroundColor={elevation ? `$color${elevation}` : "$color2"}

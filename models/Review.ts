@@ -9,7 +9,7 @@ export const reviewSchema = z.object({
   likes: z.number(),
   dislikes: z.number(),
   comments: z.number(),
-  images: z.string().array(),
+  images: z.string().array().nullish(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });

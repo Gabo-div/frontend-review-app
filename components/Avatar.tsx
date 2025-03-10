@@ -1,6 +1,6 @@
-import { Avatar as TAvatar, Circle } from "tamagui";
-import { User } from "@tamagui/lucide-icons";
+import { Circle, View } from "tamagui";
 import { useAuthStore } from "@/stores/authStore";
+import { Image } from "expo-image";
 
 interface Props {
   src?: string;
@@ -15,22 +15,22 @@ export default function Avatar({ src, size = "$4" }: Props) {
   }
 
   return (
-    <TAvatar circular size={size}>
-      <TAvatar.Image
+    <View
+      width={size}
+      height={size}
+      backgroundColor="$color4"
+      overflow="hidden"
+      borderRadius="100%"
+    >
+      <Image
         source={{
           uri: src,
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }}
+        style={{ flex: 1 }}
       />
-      <TAvatar.Fallback
-        backgroundColor="$color4"
-        alignItems="center"
-        justifyContent="center"
-      >
-        <User size="$1" />
-      </TAvatar.Fallback>
-    </TAvatar>
+    </View>
   );
 }

@@ -4,8 +4,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Link } from "expo-router";
 import { useState } from "react";
 import { useAuthStore } from "@/stores/authStore";
+import useUser from "@/hooks/useUser";
 
 export default function ProfileHeader() {
+  const { data: user } = useUser();
+
   const insets = useSafeAreaInsets();
   const [isOpen, setIsOpen] = useState(false);
   const authStore = useAuthStore();
@@ -34,7 +37,7 @@ export default function ProfileHeader() {
           alignItems="center"
           onPress={() => setIsOpen(true)}
         >
-          <Text fontSize="$8">Usuario</Text>
+          <Text fontSize="$7">{user?.username || "usuario"}</Text>
           <ChevronDown size="$1.5" />
         </View>
 

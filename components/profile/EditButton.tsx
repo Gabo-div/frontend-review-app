@@ -15,7 +15,7 @@ import {
   YStack,
 } from "tamagui";
 
-export default function EditBotton() {
+export default function EditButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [description, setDescription] = useState("");
   const maxLength = 200;

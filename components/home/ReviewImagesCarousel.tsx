@@ -1,7 +1,8 @@
 import { useAuthStore } from "@/stores/authStore";
+import { Image } from "expo-image";
 import { useRef, useState } from "react";
 import { Animated, FlatList } from "react-native";
-import { Image, View, Circle } from "tamagui";
+import { View, Circle } from "tamagui";
 
 interface Props {
   images: string[];
@@ -35,7 +36,7 @@ export default function ReviewImagesCarousel({ images }: Props) {
                   Authorization: `Bearer ${token}`,
                 },
               }}
-              flex={1}
+              style={{ flex: 1 }}
             />
           </View>
         )}

@@ -67,7 +67,7 @@ export const getReviewsByPlaceId = async (
     `/reviews/place/${placeId}?page=${page}&limit=${limit}`,
   );
 
-  return {
+  const parsed = {
     data: reviewSchema.array().parse(
       res.data.data.map((r: any) => ({
         ...r,
@@ -79,5 +79,59 @@ export const getReviewsByPlaceId = async (
     ),
     nextPage: res.data.pagination.has_next_page,
     page: res.data.pagination.page,
+  };
+
+  return {
+    ...parsed,
+    data: parsed.data.map((data) => ({
+      ...data,
+      images: data.images
+        ? data.images.map((img) => {
+            return img.startsWith("http")
+              ? img
+              : process.env.API_URL + "/" + img;
+          })
+        : null,
+    })),
+  };
+};
+
+export const getReviewsByUserId = async (
+  userId: number,
+  options?: { page?: number; limit?: number },
+) => {
+  const page = options?.page || 1;
+  const limit = options?.limit || 10;
+
+  const res = await api.get(
+    `/reviews/user/${userId}?page=${page}&limit=${limit}`,
+  );
+
+  const parsed = {
+    data: reviewSchema.array().parse(
+      res.data.data.map((r: any) => ({
+        ...r,
+        placeId: r.place_id,
+        userId: r.user_id,
+        createdAt: r.created_at.slice(0, 27),
+        updatedAt: r.updated_at.slice(0, 27),
+      })),
+    ),
+    nextPage: res.data.pagination.has_next_page,
+    page: res.data.pagination.page,
+  };
+
+  return {
+    ...parsed,
+    data: parsed.data.map((data) => ({
+      ...data,
+      images: data.images
+        ? data.images.map((img) => {
+            return img.startsWith("http")
+              ? img
+              : process.env.API_URL + "/" + img;
+          })
+        : null,
+    })),
   };
 };
