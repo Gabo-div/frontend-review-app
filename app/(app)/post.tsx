@@ -22,7 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { getPlaceByMapsId } from "@/services/places";
 import { postReview } from "@/services/reviews";
 import { useToastController } from "@tamagui/toast";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 const inpustSchema = z.object({
   mapsId: z
@@ -38,6 +38,12 @@ const inpustSchema = z.object({
 type Inputs = z.infer<typeof inpustSchema>;
 
 export default function Post() {
+  const params = useLocalSearchParams<{
+    address?: string;
+    mapsId?: string;
+    name?: string;
+  }>();
+
   const {
     control,
     handleSubmit,
@@ -124,6 +130,15 @@ export default function Post() {
 
           <YStack width="100%" gap="$2">
             <PlaceSelector
+              defaultSelected={
+                params.address && params.mapsId
+                  ? {
+                      address: params.address,
+                      maps_id: params.mapsId,
+                      name: params.name || null,
+                    }
+                  : undefined
+              }
               onPlaceSelect={(place) => {
                 if (!place) {
                   setValue("mapsId", "", { shouldValidate: true });

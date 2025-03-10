@@ -1,31 +1,17 @@
-import {
-  Bookmark,
-  CornerUpRight,
-  MessageSquarePlus,
-  Star,
-} from "@tamagui/lucide-icons";
-import {
-  Button,
-  Image,
-  ScrollView,
-  Spinner,
-  Text,
-  View,
-  useTheme,
-} from "tamagui";
+import { Bookmark, MessageSquarePlus } from "@tamagui/lucide-icons";
+import { Button, ScrollView, Spinner, Text, View } from "tamagui";
 
 import PlaceDetailsContacts from "./PlaceDetailsContacts";
 import { Coordinate } from "@/models/Coordinate";
 import usePlace from "@/hooks/usePlace";
 import PlaceReviews from "./PlaceReviews";
+import { Link } from "expo-router";
 
 interface Props {
   query: string | number | Coordinate;
 }
 
 export default function PlaceDetails({ query }: Props) {
-  const theme = useTheme();
-
   const { data, isLoading, error, refetch } = usePlace(query);
 
   return (
@@ -65,36 +51,29 @@ export default function PlaceDetails({ query }: Props) {
             <Text fontSize="$4" color="$color11" textTransform="capitalize">
               {data.details.category.replaceAll("_", " ")}
             </Text>
-            <View gap="$1.5">
-              <View flexDirection="row" alignItems="center" gap="$2">
-                <Text fontSize="$1" color="$color11">
-                  5.0
-                </Text>
-                <View flexDirection="row" gap="$1">
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <Star
-                      key={i}
-                      fill={theme.yellow9.get()}
-                      strokeWidth={0}
-                      size={14}
-                    />
-                  ))}
-                </View>
-                <Text fontSize="$1" color="$color11">
-                  (83)
-                </Text>
-              </View>
-            </View>
 
             <View marginTop="$2">
               <ScrollView horizontal>
                 <View flexDirection="row" gap="$2">
-                  <Button themeInverse size="$3.5" icon={<MessageSquarePlus />}>
-                    Publicar
-                  </Button>
-                  <Button size="$3.5" icon={<CornerUpRight />}>
-                    Direcciones
-                  </Button>
+                  <Link
+                    asChild
+                    href={{
+                      pathname: "/post",
+                      params: {
+                        address: data.details.address,
+                        mapsId: data.details.maps_id,
+                        name: data.details.name,
+                      },
+                    }}
+                  >
+                    <Button
+                      themeInverse
+                      size="$3.5"
+                      icon={<MessageSquarePlus />}
+                    >
+                      Publicar
+                    </Button>
+                  </Link>
                   <Button size="$3.5" icon={<Bookmark />}>
                     Guardar
                   </Button>
@@ -111,46 +90,9 @@ export default function PlaceDetails({ query }: Props) {
               />
 
               <View>
-                <ScrollView horizontal>
-                  <View flexDirection="row" gap="$4" paddingHorizontal="$4">
-                    <View
-                      borderRadius="$radius.4"
-                      overflow="hidden"
-                      height="$20"
-                      aspectRatio="1/1"
-                    >
-                      <Image
-                        source={{
-                          uri: "https://picsum.photos/600/600",
-                          width: 200,
-                          height: 300,
-                        }}
-                        width="100%"
-                        height="100%"
-                      />
-                    </View>
-                    <View
-                      borderRadius="$radius.4"
-                      overflow="hidden"
-                      height="$20"
-                      aspectRatio="1/1"
-                    >
-                      <Image
-                        source={{
-                          uri: "https://picsum.photos/600/800",
-                          width: 200,
-                          height: 300,
-                        }}
-                        width="100%"
-                        height="100%"
-                      />
-                    </View>
-                  </View>
-                </ScrollView>
+                <Text paddingHorizontal="$4">Reseñas</Text>
+                <PlaceReviews placeId={data.id} />
               </View>
-
-              <Text paddingHorizontal="$4">Reseñas</Text>
-              <PlaceReviews placeId={data.id} />
             </View>
           </ScrollView>
         </View>

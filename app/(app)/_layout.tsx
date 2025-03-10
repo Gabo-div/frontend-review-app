@@ -78,6 +78,12 @@ export default function StacksLayout() {
           title: "Publicar",
         }}
       />
+      <Stack.Screen
+        name="user"
+        options={{
+          title: "Usuario",
+        }}
+      />
     </Stack>
   );
 }

@@ -6,10 +6,14 @@ import { Button, Input, Separator, Spinner, Text, View } from "tamagui";
 type Option = { maps_id: string; address: string; name: string | null };
 
 interface Props {
+  defaultSelected?: Option;
   onPlaceSelect?: (place: Option | null) => void;
 }
 
-export default function PlaceSelector({ onPlaceSelect }: Props) {
+export default function PlaceSelector({
+  defaultSelected,
+  onPlaceSelect,
+}: Props) {
   const [query, setQuery] = useState("");
   const [value, setValue] = useState("");
 
@@ -18,7 +22,9 @@ export default function PlaceSelector({ onPlaceSelect }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  const [selected, setSelected] = useState<Option | null>(null);
+  const [selected, setSelected] = useState<Option | null>(
+    defaultSelected || null,
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => {

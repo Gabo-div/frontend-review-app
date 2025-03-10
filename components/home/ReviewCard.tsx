@@ -75,19 +75,27 @@ export default function ReviewCard({ data, elevation }: Props) {
             </View>
           </View>
 
-          <View flexDirection="row" gap="$2">
+          <View flexDirection="row">
             {user ? (
-              <>
-                <Avatar size="$3" src={user?.avatarUrl} />
-                <View>
-                  <Text fontSize="$2">{user.displayName}</Text>
-                  <Text color="$gray10" fontSize="$2">
-                    {user.username}
-                  </Text>
+              <Link
+                asChild
+                href={{
+                  pathname: "/user",
+                  params: { id: user.id },
+                }}
+              >
+                <View flexDirection="row" gap="$2">
+                  <Avatar size="$3" src={user?.avatarUrl} />
+                  <View>
+                    <Text fontSize="$2">{user.displayName}</Text>
+                    <Text color="$gray10" fontSize="$2">
+                      {user.username}
+                    </Text>
+                  </View>
                 </View>
-              </>
+              </Link>
             ) : (
-              <>
+              <View flexDirection="row" gap="$2">
                 <Circle size="$3" backgroundColor="$color4" borderRadius="$9" />
                 <View gap="$2">
                   <Square
@@ -103,7 +111,7 @@ export default function ReviewCard({ data, elevation }: Props) {
                     borderRadius="$radius.2"
                   />
                 </View>
-              </>
+              </View>
             )}
             <Text
               marginTop="$1"

@@ -137,12 +137,7 @@ export default function UserProfile({ userId }: Props) {
               <Rows3 size="$2" strokeWidth={1} />
             </Tabs.Tab>
 
-            <Tabs.Tab
-              flex={1}
-              value="tab2"
-              disabled={!!userId}
-              disabledStyle={{ opacity: 0.5 }}
-            >
+            <Tabs.Tab flex={1} value="tab2">
               <MapPinned size="$2" strokeWidth={1} color={"$color"} />
             </Tabs.Tab>
 
