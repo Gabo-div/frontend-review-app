@@ -18,6 +18,7 @@ export const getUserById = async (userId: number) => {
     description: data.description,
     email: data.email,
     verified: data.verified,
+    role: data.role,
     reviewsCount: data.reviews,
     followersCount: data.followers,
     followingCount: data.following,

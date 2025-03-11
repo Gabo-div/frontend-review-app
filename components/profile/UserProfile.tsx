@@ -69,7 +69,6 @@ export default function UserProfile({ userId }: Props) {
       </View>
     );
   }
-
   return (
     <>
       <ScrollView>
@@ -105,14 +104,29 @@ export default function UserProfile({ userId }: Props) {
                 </TextNum>
               </XStack>
 
-              <Text
-                marginLeft="$2"
-                fontSize="$5"
-                fontWeight="bold"
-                color="$color"
-              >
-                {user.username}
-              </Text>
+              <View flexDirection="row" alignItems="center" gap="$2">
+                <Text
+                  marginLeft="$2"
+                  fontSize="$5"
+                  fontWeight="bold"
+                  color="$color"
+                >
+                  {user.username}
+                </Text>
+
+                {user.role === "admin" ? (
+                  <Text
+                    backgroundColor="$red4"
+                    paddingHorizontal="$3"
+                    paddingVertical="$1"
+                    borderRadius="$4"
+                    color="$color12"
+                    fontSize="$1"
+                  >
+                    Administrador
+                  </Text>
+                ) : null}
+              </View>
 
               <Text marginLeft="$2" fontSize="$4" color="$color">
                 {user.description || "Sin descripción."}

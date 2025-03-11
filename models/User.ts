@@ -8,6 +8,7 @@ export const userSchema = z.object({
   description: z.string().optional(),
   email: z.string(),
   verified: z.boolean(),
+  role: z.enum(["user", "admin"]),
   reviewsCount: z.number(),
   followersCount: z.number(),
   followingCount: z.number(),
