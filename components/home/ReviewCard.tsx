@@ -15,6 +15,7 @@ import ReviewImagesCarousel from "./ReviewImagesCarousel";
 import { Link } from "expo-router";
 import Avatar from "@/components/Avatar";
 import useUserReaction from "@/hooks/useUserReaction";
+import ReactionsSheet from "../ReactionsSheet";
 
 interface Props {
   data: Review;
@@ -23,6 +24,8 @@ interface Props {
 
 export default function ReviewCard({ data, elevation }: Props) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [isReactionsOpen, setIsReactionsOpen] = useState(false);
+
   const { data: user } = useUser(data.userId);
   const { data: place } = usePlace(data.placeId);
   const { data: reaction } = useUserReaction({
@@ -139,6 +142,7 @@ export default function ReviewCard({ data, elevation }: Props) {
               icon={<ThumbsUp size="$1" />}
               padding="0"
               color={reaction?.reaction === "like" ? "$green10" : undefined}
+              onLongPress={() => setIsReactionsOpen(true)}
             >
               {data.likes.toString()}
             </Button>
@@ -147,6 +151,7 @@ export default function ReviewCard({ data, elevation }: Props) {
               icon={<ThumbsDown size="$1" />}
               padding="0"
               color={reaction?.reaction === "dislike" ? "$red10" : undefined}
+              onLongPress={() => setIsReactionsOpen(true)}
             >
               {data.dislikes.toString()}
             </Button>
@@ -165,6 +170,12 @@ export default function ReviewCard({ data, elevation }: Props) {
         reviewId={data.id}
         open={isSheetOpen}
         onOpenChange={setIsSheetOpen}
+      />
+      <ReactionsSheet
+        contentType="review"
+        contentId={data.id}
+        open={isReactionsOpen}
+        onOpenChange={setIsReactionsOpen}
       />
     </>
   );

@@ -1,6 +1,7 @@
 import { api } from "@/lib/api";
 import { Reaction, reactionSchema } from "@/models/Reaction";
 import { AxiosError } from "axios";
+import moment from "moment";
 
 const routes: Record<Reaction["contentType"], string> = {
   review: "reviews",
@@ -19,6 +20,10 @@ const parseReactionType = (type: any): Reaction["reactionType"] => {
   } else {
     return "dislike";
   }
+};
+
+const date = (date: string) => {
+  return moment(date, "YYYY-MM-DD hh:mm a").format("YYYY-MM-DDTHH:mm:ss");
 };
 
 export const getContentReactions = async ({
@@ -44,8 +49,8 @@ export const getContentReactions = async ({
         contentId: r.content_id,
         contentType: r.content_type,
         reactionType: parseReactionType(r.reaction_type),
-        createdAt: r.created_at.slice(0, 27),
-        updatedAt: r.updated_at.slice(0, 27),
+        createdAt: date(r.created_at),
+        updatedAt: date(r.updated_at),
       })),
     ),
     next: res.data.next_cursor || undefined,
