@@ -27,3 +27,21 @@ export const getUserById = async (userId: number) => {
     updatedAt: data.updated_at.slice(0, 27),
   });
 };
+
+export const getUsersFollowers = async (userId: number, _cursor?: number) => {
+  const res = await api.get(`/users/${userId}/followers`);
+
+  return {
+    data: userSchema.pick({ id: true }).array().parse(res.data.data),
+    next: undefined,
+  };
+};
+
+export const getUsersFollowings = async (userId: number, _cursor?: number) => {
+  const res = await api.get(`/users/${userId}/followings`);
+
+  return {
+    data: userSchema.pick({ id: true }).array().parse(res.data.data),
+    next: undefined,
+  };
+};
