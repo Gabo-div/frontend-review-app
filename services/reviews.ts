@@ -135,3 +135,18 @@ export const getReviewsByUserId = async (
     })),
   };
 };
+
+export const deleteReview = async (reviewId: number) => {
+  try {
+    await api.delete(`/reviews/${reviewId}`);
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+    };
+  }
+};

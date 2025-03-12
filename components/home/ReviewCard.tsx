@@ -4,6 +4,7 @@ import {
   MessageCircle,
   ThumbsDown,
   ThumbsUp,
+  Wrench,
 } from "@tamagui/lucide-icons";
 import { Button, Circle, Square, Text, View } from "tamagui";
 import CommentsSheet from "../CommentsSheet";
@@ -16,6 +17,7 @@ import { Link } from "expo-router";
 import Avatar from "@/components/Avatar";
 import useUserReaction from "@/hooks/useUserReaction";
 import ReactionsSheet from "../ReactionsSheet";
+import AdminReviewSheet from "../AdminReviewSheet";
 
 interface Props {
   data: Review;
@@ -23,9 +25,11 @@ interface Props {
 }
 
 export default function ReviewCard({ data, elevation }: Props) {
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isReactionsOpen, setIsReactionsOpen] = useState(false);
 
+  const { data: currentUser } = useUser();
   const { data: user } = useUser(data.userId);
   const { data: place } = usePlace(data.placeId);
   const { data: reaction } = useUserReaction({
@@ -35,7 +39,19 @@ export default function ReviewCard({ data, elevation }: Props) {
 
   return (
     <>
-      <View borderRadius="$4" overflow="hidden">
+      <View borderRadius="$4" overflow="hidden" position="relative">
+        {currentUser && currentUser.role === "admin" ? (
+          <Button
+            circular
+            position="absolute"
+            icon={Wrench}
+            top="$2"
+            right="$2"
+            zIndex={1000}
+            onPress={() => setIsAdminOpen(true)}
+          />
+        ) : null}
+
         {data.images ? <ReviewImagesCarousel images={data.images} /> : null}
         <View
           padding="$4"
@@ -176,6 +192,11 @@ export default function ReviewCard({ data, elevation }: Props) {
         contentId={data.id}
         open={isReactionsOpen}
         onOpenChange={setIsReactionsOpen}
+      />
+      <AdminReviewSheet
+        reviewId={data.id}
+        open={isAdminOpen}
+        onOpenChange={setIsAdminOpen}
       />
     </>
   );
