@@ -15,3 +15,10 @@ export const getUserBookmarks = async (cursor?: number) => {
     next: res.data.next_cursor || undefined,
   };
 };
+
+export const saveBookmark = async (placeId: number) => {
+  const { data } = await api.post(`/bookmarks`, {
+    place_id: placeId,
+  });
+  return data;
+};
