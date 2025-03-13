@@ -18,6 +18,8 @@ import Avatar from "@/components/Avatar";
 import useUserReaction from "@/hooks/useUserReaction";
 import ReactionsSheet from "../ReactionsSheet";
 import AdminReviewSheet from "../AdminReviewSheet";
+import { postReaction } from "@/services/reactions";
+import { useToastController } from "@tamagui/toast";
 
 interface Props {
   data: Review;
@@ -36,6 +38,47 @@ export default function ReviewCard({ data, elevation }: Props) {
     contentType: "review",
     contentId: data.id,
   });
+  const toast = useToastController();
+
+  const onLike = async () => {
+    const res = await postReaction({
+      contentType: "review",
+      contentId: data.id,
+      reactionType: "like",
+    });
+    if (res) {
+      toast.show("like", {
+        message: "like saved successfully",
+        native: true,
+      });
+    } else {
+      toast.show("Ha ocurrido un error", {
+        message: "No hemos podido guardar el like",
+        native: true,
+        type: "error",
+      });
+    }
+  };
+
+  const onDislike = async () => {
+    const res = await postReaction({
+      contentType: "review",
+      contentId: data.id,
+      reactionType: "dislike",
+    });
+    if (res) {
+      toast.show("dislike", {
+        message: "dislike saved successfully",
+        native: true,
+      });
+    } else {
+      toast.show("Ha ocurrido un error", {
+        message: "No hemos podido guardar el dislike",
+        native: true,
+        type: "error",
+      });
+    }
+  };
 
   return (
     <>
@@ -159,6 +202,7 @@ export default function ReviewCard({ data, elevation }: Props) {
               padding="0"
               color={reaction?.reaction === "like" ? "$green10" : undefined}
               onLongPress={() => setIsReactionsOpen(true)}
+              onPress={onLike}
             >
               {data.likes.toString()}
             </Button>
@@ -168,6 +212,7 @@ export default function ReviewCard({ data, elevation }: Props) {
               padding="0"
               color={reaction?.reaction === "dislike" ? "$red10" : undefined}
               onLongPress={() => setIsReactionsOpen(true)}
+              onPress={onDislike}
             >
               {data.dislikes.toString()}
             </Button>

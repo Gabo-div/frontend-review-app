@@ -6,6 +6,9 @@ import { Coordinate } from "@/models/Coordinate";
 import usePlace from "@/hooks/usePlace";
 import PlaceReviews from "./PlaceReviews";
 import { Link } from "expo-router";
+import { useToastController } from "@tamagui/toast";
+import { saveBookmark } from "@/services/bookmarks";
+import { markPlaceAsVisited } from "@/services/places";
 
 interface Props {
   query: string | number | Coordinate;
@@ -13,6 +16,43 @@ interface Props {
 
 export default function PlaceDetails({ query }: Props) {
   const { data, isLoading, error, refetch } = usePlace(query);
+  const placeId = data?.id;
+
+  const toast = useToastController();
+
+  const onSave = async () => {
+    if (!placeId) return;
+    const { message } = await saveBookmark(placeId);
+    if (message) {
+      toast.show("bookmark saved", {
+        message: "Bookmark saved successfully",
+        native: true,
+      });
+    } else {
+      toast.show("Ha ocurrido un error", {
+        message: "No hemos podido guardar el bookmark",
+        native: true,
+        type: "error",
+      });
+    }
+  };
+
+  const onVisite = async () => {
+    if (!placeId) return;
+    const { message } = await markPlaceAsVisited(placeId);
+    if (message) {
+      toast.show("place visited", {
+        message: "Place visited successfully",
+        native: true,
+      });
+    } else {
+      toast.show("Ha ocurrido un error", {
+        message: "No hemos podido marcar el lugar como visitado",
+        native: true,
+        type: "error",
+      });
+    }
+  };
 
   return (
     <View width="100%" height="100%">
@@ -74,8 +114,11 @@ export default function PlaceDetails({ query }: Props) {
                       Publicar
                     </Button>
                   </Link>
-                  <Button size="$3.5" icon={<Bookmark />}>
+                  <Button onPress={onSave} size="$3.5" icon={<Bookmark />}>
                     Guardar
+                  </Button>
+                  <Button onPress={onVisite} size="$3.5" icon={<Bookmark />}>
+                    Visitado
                   </Button>
                 </View>
               </ScrollView>

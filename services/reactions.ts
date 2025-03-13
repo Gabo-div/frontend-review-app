@@ -84,3 +84,21 @@ export const checkUserReaction = async ({
     }
   }
 };
+
+export const postReaction = async ({
+  contentType,
+  contentId,
+  reactionType,
+}: {
+  contentType: Reaction["contentType"];
+  contentId: number;
+  reactionType: Reaction["reactionType"];
+}) => {
+  const res = await api.post(`/reactions`, {
+    content_type: contentType,
+    content_id: contentId,
+    reaction_type: reactionType === "like",
+  });
+
+  return res.data;
+};

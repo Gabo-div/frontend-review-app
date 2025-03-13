@@ -78,3 +78,10 @@ export const getPlacesByQuery = async (
     return 0;
   });
 };
+
+export const markPlaceAsVisited = async (placeId: number) => {
+  const { data } = await api.post(`/visited`, {
+    place_id: placeId,
+  });
+  return data;
+};
